@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="auth_done">Authentication Completed!</string>
+    <string name="auth_me">URLをクリックして、認証してください</string>
     <string name="flickr">flickr</string>
     <string name="hello">Hello World, FlickrTwiccaActivity!</string>
     <string name="app_name">twicca flickr プラグイン</string>
