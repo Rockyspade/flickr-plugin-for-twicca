@@ -3,3 +3,6 @@ syntax: regexp
 ^gen$
 syntax: regexp
 ^bin$
+
+syntax: regexp
+^src/net/itsuha/flickr_twicca/application\.properties$
