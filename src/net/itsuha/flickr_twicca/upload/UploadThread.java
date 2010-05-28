@@ -1,4 +1,4 @@
-package net.itsuha.flickr_twicca.activity;
+package net.itsuha.flickr_twicca.upload;
 
 import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
 
@@ -6,17 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.itsuha.flickr_twicca.R;
 import net.itsuha.flickr_twicca.util.AppProperties;
 import net.itsuha.flickr_twicca.util.FlickrBaseEncoder;
 
 import org.xml.sax.SAXException;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
@@ -27,29 +20,39 @@ import com.aetrion.flickr.uploader.Uploader;
 import com.aetrion.flickr.util.AuthStore;
 import com.aetrion.flickr.util.FileAuthStore;
 
-public class UploadActivity extends Activity {
-	private static final String LOGTAG = "UploadActivity";
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.auth);
+public class UploadThread extends Thread {
+	private static final String LOGTAG = "UploadThread";
+	private Handler mHandler;
+	private Context mCtx;
+	private Uri mFileUri;
+	private String mTweet;
 
-		Intent callIntent = getIntent();
-		Uri fileUri = callIntent.getData();
-		String tweet = callIntent.getStringExtra(Intent.EXTRA_TEXT);
-		Uri result = upload(fileUri, tweet);
-		if(DEBUG)
-			Log.d(LOGTAG, "result: "+result.toString());
-
-		if (result != null) {
-			Intent returnIntent = new Intent();
-			returnIntent.setData(result);
-			setResult(Activity.RESULT_OK, returnIntent);
-		}
-		finish();
+	public UploadThread(Handler handler, Context ctx, Uri fileUri, String tweet){
+		mHandler = handler;
+		mCtx = ctx;
+		mFileUri = fileUri;
+		mTweet = tweet;
 	}
 
+	@Override
+	public void run() {
+		Uri result = upload(mFileUri, mTweet);
+		if (result != null) {
+			Bundle bundle = new Bundle();
+			bundle.putParcelable(UploadActivity.URL, result);
+			Message msg = new Message();
+			msg.setData(bundle);
+			mHandler.sendMessage(msg);
+		}
+	}
+	
 	private Uri upload(Uri fileUri, String tweet) {
 		String apiKey = AppProperties.getInstance().getApiKey();
 		String secret = AppProperties.getInstance().getSecret();
@@ -72,7 +75,7 @@ public class UploadActivity extends Activity {
 		}
 		InputStream ins = null;
 		try {
-			ins = this.getContentResolver().openInputStream(fileUri);
+			ins = mCtx.getContentResolver().openInputStream(fileUri);
 
 		} catch (FileNotFoundException e) {
 			if (DEBUG) {
@@ -106,7 +109,7 @@ public class UploadActivity extends Activity {
 	private Auth retrieveToken() {
 		AuthStore store = null;
 		try {
-			store = new FileAuthStore(getFilesDir());
+			store = new FileAuthStore(mCtx.getFilesDir());
 		} catch (IOException e1) {
 			return null;
 		}

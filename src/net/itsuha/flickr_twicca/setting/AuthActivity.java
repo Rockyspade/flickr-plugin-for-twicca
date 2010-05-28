@@ -1,4 +1,4 @@
-package net.itsuha.flickr_twicca.activity;
+package net.itsuha.flickr_twicca.setting;
 
 import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
 
@@ -15,6 +15,8 @@ import net.itsuha.flickr_twicca.util.SharedPreferenceManager;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -34,10 +36,9 @@ import com.aetrion.flickr.util.AuthStore;
 import com.aetrion.flickr.util.FileAuthStore;
 
 public class AuthActivity extends Activity {
-	private Flickr mFlickr;
-	private String mToken = "";
 	private AuthInterface mAuthInterface;
 	private String mFrob = "";
+	private Auth mAuth;
 	private static final String LOGTAG = "AuthActivity";
 
 	/** Called when the activity is first created. */
@@ -47,7 +48,7 @@ public class AuthActivity extends Activity {
 		setContentView(R.layout.auth);
 
 		try {
-			auth();
+			authenticate();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,23 +62,26 @@ public class AuthActivity extends Activity {
 		Button authButton = (Button) findViewById(R.id.btn_complete);
 		authButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				saveAuthResult();
-				finish();
+				try {
+					saveAuthResult();
+					showAuthResultDialog();
+				} catch (Exception e) {
+					showAuthErrorDialog();
+				}
 			}
-
 		});
 	}
 
-	private void auth() throws IOException, SAXException,
+	private void authenticate() throws IOException, SAXException,
 			ParserConfigurationException {
 		AppProperties prop = AppProperties.getInstance();
 		String apiKey = prop.getApiKey();
 		String secret = prop.getSecret();
-		mFlickr = new Flickr(apiKey, secret, new REST());
+		Flickr flickr = new Flickr(apiKey, secret, new REST());
 		Flickr.debugStream = false;
 		RequestContext requestContext;
 		requestContext = RequestContext.getRequestContext();
-		mAuthInterface = mFlickr.getAuthInterface();
+		mAuthInterface = flickr.getAuthInterface();
 		try {
 			mFrob = mAuthInterface.getFrob();
 		} catch (FlickrException e) {
@@ -93,47 +97,52 @@ public class AuthActivity extends Activity {
 			Log.d(LOGTAG, Messages.getString("SettingActivity.0")); //$NON-NLS-1$
 			Log.d(LOGTAG, authUrl.toExternalForm()); //$NON-NLS-1$
 		}
-		/*
-		 * BufferedReader infile = new BufferedReader(new InputStreamReader(
-		 * System.in)); String line = infile.readLine();
-		 */
+	}
+
+	private void saveAuthResult() throws IOException, SAXException,
+			FlickrException {
+		Auth auth = mAuthInterface.getToken(mFrob);
+		mAuth = auth;
+
+		/* store authentication token */
+		AuthStore store = null;
+		try {
+			store = new FileAuthStore(getFilesDir());
+		} catch (IOException e1) {
+			return;
+		}
+		store.clearAll();
+		store.store(auth);
 
 	}
 
-	private void saveAuthResult() {
-		try {
-			Auth auth = mAuthInterface.getToken(mFrob);
-			
-			/* store authentication token */
-			AuthStore store = null;
-			try {
-				store = new FileAuthStore(getFilesDir());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			store.store(auth);
-			
-			mToken = auth.getToken();
-			if (DEBUG) {
-				Log.d(LOGTAG, "Authentication success");
-				// This token can be used until the user revokes it.
-				Log.d(LOGTAG, "Token: " + mToken);//$NON-NLS-1$
-				Log.d(LOGTAG, "nsid: " + auth.getUser().getId()); //$NON-NLS-1$
-				Log.d(LOGTAG, "Realname: " + auth.getUser().getRealName()); //$NON-NLS-1$
-				Log.d(LOGTAG, "Username: " + auth.getUser().getUsername()); //$NON-NLS-1$
-				Log.d(LOGTAG, "Permission: " + auth.getPermission().getType()); //$NON-NLS-1$
-			}
-		} catch (FlickrException e) {
-			if (DEBUG)
-				Log.d(LOGTAG, "Authentication failed"); //$NON-NLS-1$
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void showAuthResultDialog() {
+		Auth auth = mAuth;
+		String title = "ログイン成功";
+		String message = auth.getUser().getUsername() + " としてログインしました";
+		showDialog(title, message);
+	}
 
+	private void showAuthErrorDialog() {
+		String title = "エラー";
+		String message = "認証エラーです";
+		showDialog(title, message);
+	}
+	
+	private void showDialog(String title, String message){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+		alertDialogBuilder.setTitle(title);
+		alertDialogBuilder.setMessage(message);
+		alertDialogBuilder.setPositiveButton("OK",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+		alertDialogBuilder.setCancelable(false);
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
+		
 	}
 }
