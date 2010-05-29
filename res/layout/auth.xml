@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/auth_layout" android:orientation="vertical"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/auth_me" android:text="@string/auth_me"></TextView>
-<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:autoLink="web" android:id="@+id/auth_url" android:text="http://example.com"></TextView>
-<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="@string/auth_done" android:layout_marginTop="40dip" android:id="@+id/btn_complete"></Button>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/auth_layout" android:orientation="vertical"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/auth_me" android:text="@string/auth_me" android:layout_margin="20dip" android:layout_gravity="center"></TextView>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:autoLink="web" android:id="@+id/auth_url" android:text="http://example.com" android:layout_margin="20dip" android:layout_gravity="center"></TextView>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auth_done" android:id="@+id/btn_complete" android:layout_marginTop="20dip" android:layout_gravity="center"></Button>
 </LinearLayout>
