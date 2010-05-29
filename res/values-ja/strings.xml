@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msg_wait">しばらくお待ちください</string>
+    <string name="titile_uploading">アップロードしています</string>
+    <string name="ok">OK</string>
+    <string name="msg_auth_failure">認証エラーです</string>
+    <string name="title_error">エラー</string>
+    <string name="msg_logined_as">{0}としてログインしました</string>
+    <string name="title_login_success">ログイン成功</string>
+    <string name="auth_done">Authentication Completed!</string>
+    <string name="auth_me">URLをクリックして、認証してください</string>
+    <string name="flickr">flickr</string>
+    
+    <string name="app_name">twicca flickr plugin</string>
+<string name="app_label">twicca flickr プラグイン</string>
+</resources>

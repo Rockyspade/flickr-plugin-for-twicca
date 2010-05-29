@@ -4,13 +4,12 @@ import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.itsuha.flickr_twicca.R;
 import net.itsuha.flickr_twicca.util.AppProperties;
-import net.itsuha.flickr_twicca.util.Messages;
-import net.itsuha.flickr_twicca.util.SharedPreferenceManager;
 
 import org.xml.sax.SAXException;
 
@@ -18,7 +17,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -94,8 +92,8 @@ public class AuthActivity extends Activity {
 		TextView authUrlText = (TextView) findViewById(R.id.auth_url);
 		authUrlText.setText(authUrl.toString());
 		if (DEBUG) {
-			Log.d(LOGTAG, Messages.getString("SettingActivity.0")); //$NON-NLS-1$
-			Log.d(LOGTAG, authUrl.toExternalForm()); //$NON-NLS-1$
+			Log.d(LOGTAG, "Authentication Sucess");
+			Log.d(LOGTAG, authUrl.toString()); //$NON-NLS-1$
 		}
 	}
 
@@ -118,14 +116,14 @@ public class AuthActivity extends Activity {
 
 	private void showAuthResultDialog() {
 		Auth auth = mAuth;
-		String title = "ログイン成功";
-		String message = auth.getUser().getUsername() + " としてログインしました";
+		String title = getString(R.string.title_login_success);
+		String message = MessageFormat.format(getString(R.string.msg_logined_as) , auth.getUser().getUsername());
 		showDialog(title, message);
 	}
 
 	private void showAuthErrorDialog() {
-		String title = "エラー";
-		String message = "認証エラーです";
+		String title = getString(R.string.title_error);
+		String message = getString(R.string.msg_auth_failure);
 		showDialog(title, message);
 	}
 	
@@ -133,7 +131,7 @@ public class AuthActivity extends Activity {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		alertDialogBuilder.setTitle(title);
 		alertDialogBuilder.setMessage(message);
-		alertDialogBuilder.setPositiveButton("OK",
+		alertDialogBuilder.setPositiveButton(R.string.ok,
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import net.itsuha.flickr_twicca.R;
 
 public class UploadActivity extends Activity {
 	private static final String LOGTAG = "UploadActivity";
@@ -19,7 +20,6 @@ public class UploadActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.upload);
 
 		showProgressDialog();
 
@@ -48,8 +48,8 @@ public class UploadActivity extends Activity {
 
 	private void showProgressDialog() {
 		mDialog = new ProgressDialog(this);
-		mDialog.setTitle("アップロードしています");
-		mDialog.setMessage("しばらくお待ちください");
+		mDialog.setTitle(getString(R.string.titile_uploading));
+		mDialog.setMessage(getString(R.string.msg_wait));
 		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mDialog.setIndeterminate(true);
 		mDialog.setCancelable(false);
