@@ -8,17 +8,9 @@ import java.io.InputStream;
 
 import net.itsuha.flickr_twicca.util.AppProperties;
 import net.itsuha.flickr_twicca.util.FlickrBaseEncoder;
+import net.itsuha.flickr_twicca.util.SettingManager;
 
 import org.xml.sax.SAXException;
-
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.uploader.UploadMetaData;
-import com.aetrion.flickr.uploader.Uploader;
-import com.aetrion.flickr.util.AuthStore;
-import com.aetrion.flickr.util.FileAuthStore;
 
 import android.content.Context;
 import android.net.Uri;
@@ -27,6 +19,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.uploader.UploadMetaData;
+import com.aetrion.flickr.uploader.Uploader;
+
 public class UploadThread extends Thread {
 	private static final String LOGTAG = "UploadThread";
 	private Handler mHandler;
@@ -34,7 +33,7 @@ public class UploadThread extends Thread {
 	private Uri mFileUri;
 	private String mTweet;
 
-	public UploadThread(Handler handler, Context ctx, Uri fileUri, String tweet){
+	public UploadThread(Handler handler, Context ctx, Uri fileUri, String tweet) {
 		mHandler = handler;
 		mCtx = ctx;
 		mFileUri = fileUri;
@@ -44,20 +43,23 @@ public class UploadThread extends Thread {
 	@Override
 	public void run() {
 		Uri result = upload(mFileUri, mTweet);
+		Bundle bundle = new Bundle();
+		Message msg = new Message();
 		if (result != null) {
-			Bundle bundle = new Bundle();
 			bundle.putParcelable(UploadActivity.URL, result);
-			Message msg = new Message();
-			msg.setData(bundle);
-			mHandler.sendMessage(msg);
+			bundle.putInt(UploadActivity.STATUS, UploadActivity.SUCCESS);
+		} else {
+			bundle.putInt(UploadActivity.STATUS, UploadActivity.FAILURE);
 		}
+		msg.setData(bundle);
+		mHandler.sendMessage(msg);
 	}
-	
+
 	private Uri upload(Uri fileUri, String tweet) {
 		String apiKey = AppProperties.getInstance().getApiKey();
 		String secret = AppProperties.getInstance().getSecret();
 
-		Auth auth = retrieveToken();
+		Auth auth = SettingManager.getInstance().getAuth();
 		RequestContext.getRequestContext().setAuth(auth);
 
 		Flickr flickr = new Flickr(apiKey, secret, new Flickr(apiKey)
@@ -95,28 +97,12 @@ public class UploadThread extends Thread {
 		}
 		String shortId = FlickrBaseEncoder.encode(Long.valueOf(photoId));
 		String shortUrl = "http://flic.kr/p/" + shortId;
-		if(DEBUG){
-			Log.d(LOGTAG,"upload completed");
-			Log.d(LOGTAG,"photo id: "+photoId);
-			Log.d(LOGTAG,"short id: "+shortUrl);
+		if (DEBUG) {
+			Log.d(LOGTAG, "upload completed");
+			Log.d(LOGTAG, "photo id: " + photoId);
+			Log.d(LOGTAG, "short id: " + shortUrl);
 		}
 		return Uri.parse(shortUrl);
 	}
 
-	/**
-	 *  retrieve login information from store
-	 */
-	private Auth retrieveToken() {
-		AuthStore store = null;
-		try {
-			store = new FileAuthStore(mCtx.getFilesDir());
-		} catch (IOException e1) {
-			return null;
-		}
-		Auth[] tokens = store.retrieveAll();
-		if(tokens.length == 1)
-			return tokens[0];
-		else
-			return null;
-	}
 }

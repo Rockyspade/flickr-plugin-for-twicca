@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.itsuha.flickr_twicca.R;
 import net.itsuha.flickr_twicca.util.AppProperties;
+import net.itsuha.flickr_twicca.util.SettingManager;
 
 import org.xml.sax.SAXException;
 
@@ -30,8 +31,6 @@ import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
-import com.aetrion.flickr.util.AuthStore;
-import com.aetrion.flickr.util.FileAuthStore;
 
 public class AuthActivity extends Activity {
 	private AuthInterface mAuthInterface;
@@ -103,15 +102,7 @@ public class AuthActivity extends Activity {
 		mAuth = auth;
 
 		/* store authentication token */
-		AuthStore store = null;
-		try {
-			store = new FileAuthStore(getFilesDir());
-		} catch (IOException e1) {
-			return;
-		}
-		store.clearAll();
-		store.store(auth);
-
+		SettingManager.getInstance().saveAuth(auth);
 	}
 
 	private void showAuthResultDialog() {
