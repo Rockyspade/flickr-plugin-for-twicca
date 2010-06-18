@@ -88,7 +88,7 @@ public class UploadActivity extends Activity {
 
 	private void showProgressDialog() {
 		mDialog = new ProgressDialog(this);
-		mDialog.setTitle(getString(R.string.titile_uploading));
+		mDialog.setTitle(getString(R.string.title_uploading));
 		mDialog.setMessage(getString(R.string.msg_wait));
 		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mDialog.setIndeterminate(true);

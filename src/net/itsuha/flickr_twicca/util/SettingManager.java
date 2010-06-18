@@ -1,5 +1,6 @@
 package net.itsuha.flickr_twicca.util;
 
+import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
 import java.io.IOException;
 
 import com.aetrion.flickr.auth.Auth;
@@ -10,12 +11,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class SettingManager {
 	private static SettingManager singleton = new SettingManager();
-	private Context mCtx;
+	private Context mCtx = null;
 	private SharedPreferences mPref;
 	private Auth mAuth;
+	private static final String LOGTAG = "SettingManager";
 
 	private SettingManager() {
 	}

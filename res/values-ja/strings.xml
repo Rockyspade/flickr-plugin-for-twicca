@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="label_open_url">1. URLを開いて、Flickrで認証してください</string>
+	<string name="label_push_button">2. ボタンを押してください</string>
+	<string name="label_instruction">Instruction</string>
+	<string name="label_upload_sets">upload sets</string>
+	<string name="label_not_authorized">not authorized</string>
+	<string name="label_useraccount">user account</string>
+	<string name="btn_set_new_account">Set new account</string>
+	<string name="btn_auth_complete">Authentication Completed!</string>
     <string name="msg_wait">しばらくお待ちください</string>
-    <string name="titile_uploading">アップロードしています</string>
-    <string name="ok">OK</string>
-    <string name="msg_auth_failure">認証エラーです</string>
-    <string name="title_error">エラー</string>
     <string name="msg_logined_as">{0}としてログインしました</string>
+    <string name="msg_auth_failure">認証エラーです</string>
+    <string name="title_uploading">アップロードしています</string>
+    <string name="title_error">エラー</string>
     <string name="title_login_success">ログイン成功</string>
-    <string name="auth_done">Authentication Completed!</string>
-    <string name="auth_me">URLをクリックして、認証してください</string>
-    <string name="flickr">flickr</string>
+	<string name="ok">OK</string>
+	<string name="flickr">flickr</string>
+	<string name="app_name">twicca flickr plugin</string>
+	<string name="app_label">Flickr plug-in for twicca</string>
+
     
-    <string name="app_name">twicca flickr plugin</string>
-<string name="app_label">twicca flickr プラグイン</string>
 </resources>

@@ -47,14 +47,14 @@ public class AuthActivity extends Activity {
 		try {
 			authenticate();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(DEBUG)
+				Log.d(LOGTAG, "IOException");
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(DEBUG)
+				Log.d(LOGTAG, "SAXException");
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(DEBUG)
+				Log.d(LOGTAG, "ParserConfigurationException");
 		}
 		Button authButton = (Button) findViewById(R.id.btn_complete);
 		authButton.setOnClickListener(new OnClickListener() {
@@ -82,7 +82,8 @@ public class AuthActivity extends Activity {
 		try {
 			mFrob = mAuthInterface.getFrob();
 		} catch (FlickrException e) {
-			e.printStackTrace();
+			if(DEBUG)
+				Log.d(LOGTAG, "FlickrException");
 		}
 		if (DEBUG)
 			Log.d(LOGTAG, "frob: " + mFrob); //$NON-NLS-1$
@@ -90,10 +91,6 @@ public class AuthActivity extends Activity {
 				mFrob);
 		TextView authUrlText = (TextView) findViewById(R.id.auth_url);
 		authUrlText.setText(authUrl.toString());
-		if (DEBUG) {
-			Log.d(LOGTAG, "Authentication Sucess");
-			Log.d(LOGTAG, authUrl.toString()); //$NON-NLS-1$
-		}
 	}
 
 	private void saveAuthResult() throws IOException, SAXException,
@@ -102,7 +99,9 @@ public class AuthActivity extends Activity {
 		mAuth = auth;
 
 		/* store authentication token */
-		SettingManager.getInstance().saveAuth(auth);
+		SettingManager manager = SettingManager.getInstance();
+		manager.initialize(this);
+		manager.saveAuth(auth);
 	}
 
 	private void showAuthResultDialog() {

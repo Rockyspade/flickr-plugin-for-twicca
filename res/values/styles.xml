@@ -9,5 +9,5 @@
 		<item name="android:colorForeground">#fff</item>
 	</style>
 
-<style name="auth_me"></style>
+<style name="label_open_url"></style>
 </resources>
