@@ -1,24 +1,15 @@
 package net.itsuha.flickr_twicca.setting;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
+
 import java.util.Collection;
 import java.util.TreeMap;
-import java.util.TreeSet;
-
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photosets.Photoset;
-import com.aetrion.flickr.photosets.Photosets;
 
 import net.itsuha.flickr_twicca.R;
-import net.itsuha.flickr_twicca.util.DownloadIconTask;
 import net.itsuha.flickr_twicca.util.PhotosetsUtil;
 import net.itsuha.flickr_twicca.util.SettingManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +21,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photosets.Photoset;
 
 public class SettingActivity extends Activity {
 	private TreeMap<String, String> mSetsMap = null;
@@ -84,9 +78,10 @@ public class SettingActivity extends Activity {
 		/*
 		// set icon
 		if(DEBUG){
-			Log.d(LOGTAG, "buddyIconURL: "+user.getBuddyIconUrl());
 			Log.d(LOGTAG, "getIconFarm: "+user.getIconFarm());
 			Log.d(LOGTAG, "getIconServer: "+user.getIconServer());
+			Log.d(LOGTAG, "buddyIconURL: "+user.getBuddyIconUrl());
+			Log.d(LOGTAG, "getId: "+user.getId());
 		}
 		try {
 			FileInputStream fis = openFileInput(ICON_NAME);
