@@ -1,20 +1,20 @@
 package net.itsuha.flickr_twicca.upload;
 
 import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
-
-import com.aetrion.flickr.auth.Auth;
-
+import net.itsuha.flickr_twicca.R;
+import net.itsuha.flickr_twicca.setting.AuthActivity;
+import net.itsuha.flickr_twicca.util.SettingManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import net.itsuha.flickr_twicca.R;
-import net.itsuha.flickr_twicca.setting.AuthActivity;
-import net.itsuha.flickr_twicca.util.SettingManager;
+
+import com.aetrion.flickr.auth.Auth;
 
 public class UploadActivity extends Activity {
 	private static final String LOGTAG = "UploadActivity";
@@ -27,10 +27,12 @@ public class UploadActivity extends Activity {
 	/** Value for upload status */
 	public static final int FAILURE = 1;
 	private ProgressDialog mDialog;
+	private UploadThread mUpThread;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.upload);
 
 		SettingManager setting = SettingManager.getInstance();
 		setting.initialize(this);
@@ -58,7 +60,7 @@ public class UploadActivity extends Activity {
 		Intent callIntent = getIntent();
 		Uri fileUri = callIntent.getData();
 		String tweet = callIntent.getStringExtra(Intent.EXTRA_TEXT);
-		UploadThread upThread = new UploadThread(new Handler() {
+		mUpThread = new UploadThread(new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				Bundle bundle = msg.getData();
@@ -83,7 +85,7 @@ public class UploadActivity extends Activity {
 			}
 
 		}, this, fileUri, tweet);
-		upThread.start();
+		mUpThread.start();
 	}
 
 	private void showProgressDialog() {
@@ -92,7 +94,16 @@ public class UploadActivity extends Activity {
 		mDialog.setMessage(getString(R.string.msg_wait));
 		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mDialog.setIndeterminate(true);
-		mDialog.setCancelable(false);
+		// mDialog.setCancelable(false);
+		mDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+				getText(android.R.string.cancel),
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mUpThread.cancel();
+						finish();
+					}
+				});
 		mDialog.show();
 	}
 

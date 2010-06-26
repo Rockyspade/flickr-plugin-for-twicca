@@ -23,6 +23,7 @@ import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.uploader.UploadMetaData;
 import com.aetrion.flickr.uploader.Uploader;
 
@@ -32,6 +33,9 @@ public class UploadThread extends Thread {
 	private Context mCtx;
 	private Uri mFileUri;
 	private String mTweet;
+	private boolean mCancelFlag = false;
+	private String mPhotoId;
+	private Flickr mFlickr;
 
 	public UploadThread(Handler handler, Context ctx, Uri fileUri, String tweet) {
 		mHandler = handler;
@@ -43,6 +47,9 @@ public class UploadThread extends Thread {
 	@Override
 	public void run() {
 		Uri result = upload(mFileUri, mTweet);
+		if(mCancelFlag){
+			return;
+		}
 		Bundle bundle = new Bundle();
 		Message msg = new Message();
 		if (result != null) {
@@ -55,6 +62,7 @@ public class UploadThread extends Thread {
 		mHandler.sendMessage(msg);
 	}
 
+
 	private Uri upload(Uri fileUri, String tweet) {
 		String apiKey = AppProperties.getInstance().getApiKey();
 		String secret = AppProperties.getInstance().getSecret();
@@ -64,6 +72,7 @@ public class UploadThread extends Thread {
 
 		Flickr flickr = new Flickr(apiKey, secret, new Flickr(apiKey)
 				.getTransport());
+		mFlickr = flickr;
 		UploadMetaData metadata = new UploadMetaData();
 		metadata.setTitle(tweet);
 		metadata.setPublicFlag(true);
@@ -95,6 +104,12 @@ public class UploadThread extends Thread {
 		} catch (SAXException e) {
 			return null;
 		}
+		mPhotoId = photoId;
+		if(mCancelFlag)return null;
+		
+		//add the photo to the specified sets
+		addPhoto2Sets();
+		
 		String shortId = FlickrBaseEncoder.encode(Long.valueOf(photoId));
 		String shortUrl = "http://flic.kr/p/" + shortId;
 		if (DEBUG) {
@@ -105,4 +120,20 @@ public class UploadThread extends Thread {
 		return Uri.parse(shortUrl);
 	}
 
+	private void addPhoto2Sets() {
+		String setsId = SettingManager.getInstance().getDefaultSetsId();
+		if(!setsId.equals(SettingManager.BLANK_SETS_ID)){
+			PhotosetsInterface psif = mFlickr.getPhotosetsInterface();
+			try {
+				psif.addPhoto(setsId, mPhotoId);
+			} catch (IOException e) {
+			} catch (SAXException e) {
+			} catch (FlickrException e) {
+			}
+		}
+	}
+
+	public void cancel() {
+		mCancelFlag = true;
+	}
 }

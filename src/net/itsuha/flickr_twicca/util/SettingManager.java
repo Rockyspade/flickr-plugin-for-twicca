@@ -1,17 +1,15 @@
 package net.itsuha.flickr_twicca.util;
 
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
 import java.io.IOException;
-
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.util.AuthStore;
-import com.aetrion.flickr.util.FileAuthStore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.util.AuthStore;
+import com.aetrion.flickr.util.FileAuthStore;
 
 public class SettingManager {
 	private static SettingManager singleton = new SettingManager();
@@ -19,6 +17,8 @@ public class SettingManager {
 	private SharedPreferences mPref;
 	private Auth mAuth;
 	private static final String LOGTAG = "SettingManager";
+	private static final String DEFAULT_SETS_ID = "default_sets_id";
+	public static final String BLANK_SETS_ID = "0";
 
 	private SettingManager() {
 	}
@@ -69,4 +69,16 @@ public class SettingManager {
 		}
 		return true;
 	}
+
+	public void saveDefaultSetsId(String sid) {
+		Editor editor = mPref.edit();
+		editor.putString(DEFAULT_SETS_ID, sid);
+		editor.commit();
+	}
+	
+	public String getDefaultSetsId(){
+		return mPref.getString(DEFAULT_SETS_ID, BLANK_SETS_ID);
+	}
+
+
 }

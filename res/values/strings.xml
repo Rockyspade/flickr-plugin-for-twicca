@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="btn_update">Update</string>
 	<string name="label_open_url">1. Tap URL below and authorize in Flickr</string>
 	<string name="label_push_button">2. Push this button</string>
 	<string name="label_instruction">Instruction</string>
