@@ -1,28 +1,6 @@
 package net.itsuha.flickr_twicca.setting;
 
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import net.itsuha.flickr_twicca.util.AppProperties;
-
-import org.xml.sax.SAXException;
-
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.auth.Permission;
 
 
 public class FetchFrobThread extends Thread {

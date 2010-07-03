@@ -16,6 +16,7 @@ public class SettingManager {
 	private Context mCtx = null;
 	private SharedPreferences mPref;
 	private Auth mAuth;
+	@SuppressWarnings("unused")
 	private static final String LOGTAG = "SettingManager";
 	private static final String DEFAULT_SETS_ID = "default_sets_id";
 	public static final String BLANK_SETS_ID = "0";

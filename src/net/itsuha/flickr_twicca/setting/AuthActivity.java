@@ -37,6 +37,8 @@ public class AuthActivity extends Activity {
 	private String mFrob = "";
 	private Auth mAuth;
 	private static final String LOGTAG = "AuthActivity";
+	private static final String FROB = "FROB";
+	private static final String URL = "URL";
 
 	/** Called when the activity is first created. */
 	@Override
@@ -44,17 +46,33 @@ public class AuthActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.auth);
 
-		try {
-			authenticate();
-		} catch (IOException e) {
-			if(DEBUG)
-				Log.d(LOGTAG, "IOException");
-		} catch (SAXException e) {
-			if(DEBUG)
-				Log.d(LOGTAG, "SAXException");
-		} catch (ParserConfigurationException e) {
-			if(DEBUG)
-				Log.d(LOGTAG, "ParserConfigurationException");
+		if (mFrob == "") {
+			try {
+				authenticate();
+			} catch (IOException e) {
+				if (DEBUG)
+					Log.d(LOGTAG, "IOException");
+			} catch (SAXException e) {
+				if (DEBUG)
+					Log.d(LOGTAG, "SAXException");
+			} catch (ParserConfigurationException e) {
+				if (DEBUG)
+					Log.d(LOGTAG, "ParserConfigurationException");
+			}
+		} else {
+			AppProperties prop = AppProperties.getInstance();
+			String apiKey = prop.getApiKey();
+			String secret = prop.getSecret();
+			Flickr flickr;
+			try {
+				flickr = new Flickr(apiKey, secret, new REST());
+			} catch (ParserConfigurationException e) {
+				Log.e(LOGTAG, "ParserConfigurationException");
+				return;
+			}
+			// RequestContext requestContext;
+			// requestContext = RequestContext.getRequestContext();
+			mAuthInterface = flickr.getAuthInterface();
 		}
 		Button authButton = (Button) findViewById(R.id.btn_complete);
 		authButton.setOnClickListener(new OnClickListener() {
@@ -69,6 +87,22 @@ public class AuthActivity extends Activity {
 		});
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString(FROB, mFrob);
+		TextView authUrlText = (TextView) findViewById(R.id.auth_url);
+		outState.putString(URL, authUrlText.getText().toString());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mFrob = savedInstanceState.getString(FROB);
+		TextView authUrlText = (TextView) findViewById(R.id.auth_url);
+		authUrlText.setText(savedInstanceState.getString(URL));
+	}
+
 	private void authenticate() throws IOException, SAXException,
 			ParserConfigurationException {
 		AppProperties prop = AppProperties.getInstance();
@@ -76,13 +110,14 @@ public class AuthActivity extends Activity {
 		String secret = prop.getSecret();
 		Flickr flickr = new Flickr(apiKey, secret, new REST());
 		Flickr.debugStream = false;
+		@SuppressWarnings("unused")
 		RequestContext requestContext;
 		requestContext = RequestContext.getRequestContext();
 		mAuthInterface = flickr.getAuthInterface();
 		try {
 			mFrob = mAuthInterface.getFrob();
 		} catch (FlickrException e) {
-			if(DEBUG)
+			if (DEBUG)
 				Log.d(LOGTAG, "FlickrException");
 		}
 		if (DEBUG)
@@ -107,7 +142,9 @@ public class AuthActivity extends Activity {
 	private void showAuthResultDialog() {
 		Auth auth = mAuth;
 		String title = getString(R.string.title_login_success);
-		String message = MessageFormat.format(getString(R.string.msg_logined_as) , auth.getUser().getUsername());
+		String message = MessageFormat.format(
+				getString(R.string.msg_logined_as), auth.getUser()
+						.getUsername());
 		showDialog(title, message);
 	}
 
@@ -116,8 +153,8 @@ public class AuthActivity extends Activity {
 		String message = getString(R.string.msg_auth_failure);
 		showDialog(title, message);
 	}
-	
-	private void showDialog(String title, String message){
+
+	private void showDialog(String title, String message) {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		alertDialogBuilder.setTitle(title);
 		alertDialogBuilder.setMessage(message);
@@ -131,6 +168,6 @@ public class AuthActivity extends Activity {
 		alertDialogBuilder.setCancelable(false);
 		AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.show();
-		
+
 	}
 }

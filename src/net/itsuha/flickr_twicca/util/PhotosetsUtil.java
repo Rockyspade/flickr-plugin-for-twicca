@@ -47,6 +47,8 @@ public class PhotosetsUtil {
 		} else {
 			usrId = mAuth.getUser().getId();
 		}
+		if (DEBUG)
+			Log.d(LOGTAG, "usrId: " + usrId);
 		if (mPhotosetsIf == null) {
 			AppProperties prop = AppProperties.getInstance();
 			Flickr flickr;
@@ -55,7 +57,7 @@ public class PhotosetsUtil {
 						new REST());
 			} catch (ParserConfigurationException e) {
 				if (DEBUG)
-					Log.d(LOGTAG, "ParserConfigurationException");
+					Log.e(LOGTAG, "ParserConfigurationException");
 				return null;
 			}
 			mPhotosetsIf = flickr.getPhotosetsInterface();
@@ -64,15 +66,15 @@ public class PhotosetsUtil {
 			return mPhotosetsIf.getList(usrId).getPhotosets();
 		} catch (IOException e) {
 			if (DEBUG)
-				Log.d(LOGTAG, "IOException");
+				Log.e(LOGTAG, "IOException");
 			return null;
 		} catch (SAXException e) {
 			if (DEBUG)
-				Log.d(LOGTAG, "SAXException");
+				Log.e(LOGTAG, "SAXException");
 			return null;
 		} catch (FlickrException e) {
 			if (DEBUG)
-				Log.d(LOGTAG, "FlickrException");
+				Log.e(LOGTAG, "FlickrException");
 			return null;
 		}
 	}
@@ -86,8 +88,7 @@ public class PhotosetsUtil {
 			oos.close();
 			fos.close();
 		} catch (IOException e) {
-			if (DEBUG)
-				Log.d(LOGTAG, "savePhotosets(): IOException");
+			Log.e(LOGTAG, "savePhotosets(): IOException");
 		}
 	}
 
@@ -95,17 +96,21 @@ public class PhotosetsUtil {
 	public TreeMap<String, String> getPhotosetsFromCache() {
 		TreeMap<String, String> setsMap = null;
 		try {
+			if (DEBUG)
+				Log.d(LOGTAG, "mCtx: " + mCtx);
 			FileInputStream fis = mCtx.openFileInput(SAVE_FILE_NAME);
+			if (DEBUG)
+				Log.d(LOGTAG, "FileInputStream fis: " + fis);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			setsMap = (TreeMap<String, String>) ois.readObject();
+			if (DEBUG)
+				Log.d(LOGTAG, "setsMap: " + setsMap);
 			ois.close();
 			fis.close();
 		} catch (IOException e) {
-			if (DEBUG)
-				Log.d(LOGTAG, "savePhotosets(): IOException");
+			Log.e(LOGTAG, "savePhotosetsFromCache(): IOException");
 		} catch (ClassNotFoundException e) {
-			if (DEBUG)
-				Log.d(LOGTAG, "savePhotosets(): ClassNotFoundException");
+			Log.e(LOGTAG, "savePhotosetsFromCache(): ClassNotFoundException");
 		} finally {
 			return setsMap;
 		}

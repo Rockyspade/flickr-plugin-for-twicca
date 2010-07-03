@@ -10,7 +10,10 @@ import net.itsuha.flickr_twicca.util.PhotosetsUtil;
 import net.itsuha.flickr_twicca.util.SettingManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,7 +41,7 @@ public class SettingActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting);
-//		mIconView = (ImageView) findViewById(R.id.img_icon);
+		// mIconView = (ImageView) findViewById(R.id.img_icon);
 
 		SettingManager.getInstance().initialize(this);
 		prepareUserAccount();
@@ -76,66 +79,70 @@ public class SettingActivity extends Activity {
 		tv.setText(user.getUsername());
 
 		/*
-		// set icon
-		if(DEBUG){
-			Log.d(LOGTAG, "getIconFarm: "+user.getIconFarm());
-			Log.d(LOGTAG, "getIconServer: "+user.getIconServer());
-			Log.d(LOGTAG, "buddyIconURL: "+user.getBuddyIconUrl());
-			Log.d(LOGTAG, "getId: "+user.getId());
-		}
-		try {
-			FileInputStream fis = openFileInput(ICON_NAME);
-			Drawable icon = Drawable.createFromStream(fis, ICON);
-			mIconView.setImageDrawable(icon);
-		} catch (FileNotFoundException e) {
-			DownloadIconTask task = new DownloadIconTask(this);
-			task.execute(user.getBuddyIconUrl());
-		}
-		*/
+		 * // set icon if(DEBUG){ Log.d(LOGTAG,
+		 * "getIconFarm: "+user.getIconFarm()); Log.d(LOGTAG,
+		 * "getIconServer: "+user.getIconServer()); Log.d(LOGTAG,
+		 * "buddyIconURL: "+user.getBuddyIconUrl()); Log.d(LOGTAG,
+		 * "getId: "+user.getId()); } try { FileInputStream fis =
+		 * openFileInput(ICON_NAME); Drawable icon =
+		 * Drawable.createFromStream(fis, ICON);
+		 * mIconView.setImageDrawable(icon); } catch (FileNotFoundException e) {
+		 * DownloadIconTask task = new DownloadIconTask(this);
+		 * task.execute(user.getBuddyIconUrl()); }
+		 */
 	}
 
 	private void prepareSetsPart() {
 		Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
-		PhotosetsUtil util = new PhotosetsUtil(this);
-		TreeMap<String, String> setsMap = util.getPhotosetsFromCache();
-		if (setsMap != null)
-			updateSpinnerWithMap(setsSpinner, setsMap);
-		setsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			/**
-			 * save selected item
-			 */
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (DEBUG) {
-					;
-					Log.d(LOGTAG, "selected: "
-							+ parent.getAdapter().getItem(position));
-				}
-				String sid = resolveIdByTitle((String) parent.getAdapter()
-						.getItem(position), mSetsMap);
-				SettingManager.getInstance().saveDefaultSetsId(sid);
-				if (DEBUG) {
-					Log.d(LOGTAG, "saved value: "
-							+ SettingManager.getInstance().getDefaultSetsId());
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
-
 		Button updateButton = (Button) findViewById(R.id.update_button);
-		updateButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				updateSetsSpinnerWithFlickr();
-			}
-		});
+		if (isFullyFunctionalModel()) {
+			PhotosetsUtil util = new PhotosetsUtil(this);
+			TreeMap<String, String> setsMap = util.getPhotosetsFromCache();
+			if (setsMap != null)
+				updateSpinnerWithMap(setsSpinner, setsMap);
+			setsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+				/**
+				 * save selected item
+				 */
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view,
+						int position, long id) {
+					if (DEBUG) {
+						;
+						Log.d(LOGTAG, "selected: "
+								+ parent.getAdapter().getItem(position));
+					}
+					String sid = resolveIdByTitle((String) parent.getAdapter()
+							.getItem(position), mSetsMap);
+					SettingManager.getInstance().saveDefaultSetsId(sid);
+					if (DEBUG) {
+						Log.d(LOGTAG, "saved value: "
+								+ SettingManager.getInstance()
+										.getDefaultSetsId());
+					}
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {
+					// TODO Auto-generated method stub
+
+				}
+
+			});
+
+			updateButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					updateSetsSpinnerWithFlickr();
+				}
+			});
+		} else {
+			setsSpinner.setVisibility(View.GONE);
+			updateButton.setVisibility(View.GONE);
+			TextView tv = (TextView) findViewById(R.id.label_doesnt_support);
+			tv.setVisibility(View.VISIBLE);
+
+		}
 	}
 
 	private String[] updateSpinnerWithMap(Spinner spinner,
@@ -185,5 +192,13 @@ public class SettingActivity extends Activity {
 				return id;
 		}
 		return null;
+	}
+
+	private boolean isFullyFunctionalModel() {
+		// if (VERSION.SDK_INT == VERSION_CODES.DONUT)
+		if (Build.MODEL.equals("IS01") || Build.MODEL.equals("HT-03A"))
+			return false;
+		else
+			return true;
 	}
 }
