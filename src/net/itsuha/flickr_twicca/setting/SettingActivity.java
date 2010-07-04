@@ -12,8 +12,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,7 +41,8 @@ public class SettingActivity extends Activity {
 		setContentView(R.layout.setting);
 		// mIconView = (ImageView) findViewById(R.id.img_icon);
 
-		SettingManager.getInstance().initialize(this);
+		// initalization
+		SettingManager.getInstance(this);
 		prepareUserAccount();
 		prepareSetsPart();
 	}
@@ -71,7 +70,7 @@ public class SettingActivity extends Activity {
 	}
 
 	private void prepareUserInfomation() {
-		Auth auth = SettingManager.getInstance().getAuth();
+		Auth auth = SettingManager.getInstance(this).getAuth();
 		if (auth == null)
 			return;
 		User user = auth.getUser();
@@ -114,10 +113,10 @@ public class SettingActivity extends Activity {
 					}
 					String sid = resolveIdByTitle((String) parent.getAdapter()
 							.getItem(position), mSetsMap);
-					SettingManager.getInstance().saveDefaultSetsId(sid);
+					SettingManager.getInstance(getApplicationContext()).saveDefaultSetsId(sid);
 					if (DEBUG) {
 						Log.d(LOGTAG, "saved value: "
-								+ SettingManager.getInstance()
+								+ SettingManager.getInstance(getApplicationContext())
 										.getDefaultSetsId());
 					}
 				}
@@ -156,7 +155,7 @@ public class SettingActivity extends Activity {
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 		// TODO: make speficied sets selected
-		String defaultSetId = SettingManager.getInstance().getDefaultSetsId();
+		String defaultSetId = SettingManager.getInstance(getApplicationContext()).getDefaultSetsId();
 		int defaultPosition = 0;
 		for (String setsId : setsMap.keySet()) {
 			if (setsId.equals(defaultSetId))

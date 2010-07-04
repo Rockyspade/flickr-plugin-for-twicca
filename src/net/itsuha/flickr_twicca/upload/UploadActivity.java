@@ -34,8 +34,7 @@ public class UploadActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.upload);
 
-		SettingManager setting = SettingManager.getInstance();
-		setting.initialize(this);
+		SettingManager setting = SettingManager.getInstance(this);
 		Auth auth = setting.getAuth();
 		if (auth == null) {
 			Intent intent = new Intent(this, AuthActivity.class);
@@ -94,7 +93,6 @@ public class UploadActivity extends Activity {
 		mDialog.setMessage(getString(R.string.msg_wait));
 		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mDialog.setIndeterminate(true);
-		// mDialog.setCancelable(false);
 		mDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 				getText(android.R.string.cancel),
 				new DialogInterface.OnClickListener() {

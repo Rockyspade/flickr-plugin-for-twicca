@@ -35,7 +35,7 @@ public class PhotosetsUtil {
 		mCtx = ctx;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public Collection<Photoset> getPhotosetsFromFlickr() {
 		String usrId;
 		if (mAuth == null) {

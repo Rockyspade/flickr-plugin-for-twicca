@@ -12,7 +12,7 @@ import com.aetrion.flickr.util.AuthStore;
 import com.aetrion.flickr.util.FileAuthStore;
 
 public class SettingManager {
-	private static SettingManager singleton = new SettingManager();
+	private static SettingManager singleton = null;
 	private Context mCtx = null;
 	private SharedPreferences mPref;
 	private Auth mAuth;
@@ -21,14 +21,19 @@ public class SettingManager {
 	private static final String DEFAULT_SETS_ID = "default_sets_id";
 	public static final String BLANK_SETS_ID = "0";
 
-	private SettingManager() {
-	}
-
-	public void initialize(Context ctx) {
+	private SettingManager(Context ctx) {
 		mCtx = ctx;
 		mPref = PreferenceManager.getDefaultSharedPreferences(mCtx);
 	}
 
+	public static synchronized SettingManager getInstance(Context ctx) {
+		if(singleton == null){
+			singleton = new SettingManager(ctx);
+		}
+		return singleton;
+	}
+	
+	@Deprecated
 	public static SettingManager getInstance() {
 		return singleton;
 	}

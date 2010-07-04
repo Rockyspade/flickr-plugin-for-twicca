@@ -134,8 +134,7 @@ public class AuthActivity extends Activity {
 		mAuth = auth;
 
 		/* store authentication token */
-		SettingManager manager = SettingManager.getInstance();
-		manager.initialize(this);
+		SettingManager manager = SettingManager.getInstance(this);
 		manager.saveAuth(auth);
 	}
 

@@ -63,6 +63,7 @@ public class UploadThread extends Thread {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	private Uri upload(Uri fileUri, String tweet) {
 		String apiKey = AppProperties.getInstance().getApiKey();
 		String secret = AppProperties.getInstance().getSecret();
@@ -120,6 +121,7 @@ public class UploadThread extends Thread {
 		return Uri.parse(shortUrl);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void addPhoto2Sets() {
 		String setsId = SettingManager.getInstance().getDefaultSetsId();
 		if(!setsId.equals(SettingManager.BLANK_SETS_ID)){
