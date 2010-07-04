@@ -46,6 +46,12 @@ public class SettingActivity extends Activity {
 		prepareUserAccount();
 		prepareSetsPart();
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		updateUserInfomation();
+	}
 
 	public ImageView getIconView() {
 		return mIconView;
@@ -65,11 +71,11 @@ public class SettingActivity extends Activity {
 			}
 		});
 
-		prepareUserInfomation();
+		updateUserInfomation();
 
 	}
 
-	private void prepareUserInfomation() {
+	private void updateUserInfomation() {
 		Auth auth = SettingManager.getInstance(this).getAuth();
 		if (auth == null)
 			return;
@@ -195,7 +201,7 @@ public class SettingActivity extends Activity {
 
 	private boolean isFullyFunctionalModel() {
 		// if (VERSION.SDK_INT == VERSION_CODES.DONUT)
-		if (Build.MODEL.equals("IS01") || Build.MODEL.equals("HT-03A"))
+		if (Build.MODEL.equals("IS01") || Build.MODEL.equals("Docomo HT-03A"))
 			return false;
 		else
 			return true;
