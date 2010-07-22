@@ -26,7 +26,7 @@ public class UploadActivity extends Activity {
 	public static final int SUCCESS = 0;
 	/** Value for upload status */
 	public static final int FAILURE = 1;
-	private ProgressDialog mDialog;
+	private ProgressDialog mDialog = null;
 	private UploadThread mUpThread;
 
 	@Override
@@ -106,7 +106,10 @@ public class UploadActivity extends Activity {
 	}
 
 	private void dismissProgressDialog() {
-		mDialog.dismiss();
+		if (mDialog != null) {
+			mDialog.dismiss();
+			mDialog = null;
+		}
 	}
 
 }
