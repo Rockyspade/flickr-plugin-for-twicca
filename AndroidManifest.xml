@@ -5,7 +5,7 @@
 
 
 		<activity android:name=".upload.UploadActivity"
-			android:theme="@style/transparent">
+			android:theme="@style/transparent" android:configChanges="keyboardHidden|orientation">
 			<intent-filter android:label="@string/flickr">
 				<action android:name="jp.r246.twicca.ACTION_UPLOAD"></action>
 				<category android:name="android.intent.category.DEFAULT"></category>

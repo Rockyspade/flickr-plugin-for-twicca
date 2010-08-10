@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<drawable name="translucent_background">#440000</drawable>
+	<drawable name="translucent_background">#00000000</drawable>
 	<style name="transparent">
 		<item name="android:windowIsTranslucent">true</item>
 		<item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
