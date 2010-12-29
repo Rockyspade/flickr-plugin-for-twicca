@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.itsuha.flickr_twicca" android:versionCode="6" android:versionName="0.41">
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
-
-
+	package="net.itsuha.flickr_twicca" android:versionCode="6"
+	android:versionName="0.41">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".upload.UploadActivity"
 			android:theme="@style/transparent" android:configChanges="keyboardHidden|orientation">
 			<intent-filter android:label="@string/flickr">
 				<action android:name="jp.r246.twicca.ACTION_UPLOAD"></action>
 				<category android:name="android.intent.category.DEFAULT"></category>
-
 				<data android:mimeType="image/*"></data>
 				<data android:mimeType="video/*"></data>
 			</intent-filter>
@@ -23,9 +21,6 @@
 			</intent-filter>
 		</activity>
 	</application>
-
-
 	<uses-sdk android:minSdkVersion="4"></uses-sdk>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
 </manifest> 
