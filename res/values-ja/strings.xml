@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="btn_show_license">ライセンス全文を表示</string>
     <string name="label_open_url">1. URLを開いて、Flickrで認証してください</string>
 	<string name="label_push_button">2. ボタンを押してください</string>
 	<string name="label_instruction">Instruction</string>

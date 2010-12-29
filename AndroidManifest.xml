@@ -20,7 +20,7 @@
 				<category android:name="android.intent.category.DEFAULT"></category>
 			</intent-filter>
 		</activity>
-	<activity android:theme="@android:style/Theme.Dialog" android:name=".setting.AboutActivity"></activity>
+	<activity android:theme="@android:style/Theme.Dialog" android:name=".setting.AboutActivity" android:label="@string/label_about"></activity>
 </application>
 	<uses-sdk android:minSdkVersion="4"></uses-sdk>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
