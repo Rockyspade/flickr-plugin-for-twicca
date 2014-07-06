@@ -1,26 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.itsuha.flickr_twicca" android:versionName="0.43" android:versionCode="8">
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
-		<activity android:name=".upload.UploadActivity"
-			android:theme="@style/transparent" android:configChanges="keyboardHidden|orientation">
-			<intent-filter android:label="@string/flickr">
-				<action android:name="jp.r246.twicca.ACTION_UPLOAD"></action>
-				<category android:name="android.intent.category.DEFAULT"></category>
-				<data android:mimeType="image/*"></data>
-				<data android:mimeType="video/*"></data>
-			</intent-filter>
-		</activity>
-		<activity android:name=".setting.AuthActivity">
-		</activity>
-		<activity android:name=".setting.SettingActivity">
-			<intent-filter android:label="@string/flickr">
-				<action android:name="jp.r246.twicca.ACTION_PLUGIN_SETTINGS"></action>
-				<category android:name="android.intent.category.DEFAULT"></category>
-			</intent-filter>
-		</activity>
-	<activity android:theme="@android:style/Theme.Dialog" android:name=".setting.AboutActivity" android:label="@string/label_about"></activity>
-</application>
-	<uses-sdk android:minSdkVersion="4"></uses-sdk>
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-</manifest> 
+    package="net.itsuha.flickr_twicca"
+    android:versionCode="50"
+    android:versionName="0.5.0" >
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" >
+    </uses-sdk>
+
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" 
+        android:allowBackup="true">
+        <activity
+            android:name=".upload.UploadActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/transparent" >
+            <intent-filter android:label="@string/flickr" >
+                <action android:name="jp.r246.twicca.ACTION_UPLOAD" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+
+                <data android:mimeType="image/*" >
+                </data>
+                <data android:mimeType="video/*" >
+                </data>
+            </intent-filter>
+        </activity>
+        <activity android:name=".setting.AuthActivity" >
+        </activity>
+        <activity android:name=".setting.SettingActivity" >
+            <intent-filter android:label="@string/flickr" >
+                <action android:name="jp.r246.twicca.ACTION_PLUGIN_SETTINGS" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".setting.AboutActivity"
+            android:label="@string/label_about"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+    </application>
+
+
+</manifest>
