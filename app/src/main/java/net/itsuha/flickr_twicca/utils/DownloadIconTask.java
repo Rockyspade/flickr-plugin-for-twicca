@@ -1,4 +1,4 @@
-package net.itsuha.flickr_twicca.util;
+package net.itsuha.flickr_twicca.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

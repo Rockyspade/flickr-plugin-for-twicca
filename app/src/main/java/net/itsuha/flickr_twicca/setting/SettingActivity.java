@@ -1,17 +1,10 @@
 package net.itsuha.flickr_twicca.setting;
 
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
-
-import java.util.Collection;
-import java.util.TreeMap;
-
-import net.itsuha.flickr_twicca.R;
-import net.itsuha.flickr_twicca.util.PhotosetsUtil;
-import net.itsuha.flickr_twicca.util.SettingManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,18 +12,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.googlecode.flickrjandroid.oauth.OAuth;
-import com.googlecode.flickrjandroid.people.User;
-import com.googlecode.flickrjandroid.photosets.Photoset;
 
-public class SettingActivity extends Activity {
+import net.itsuha.flickr_twicca.R;
+import net.itsuha.flickr_twicca.utils.PhotosetsUtil;
+import net.itsuha.flickr_twicca.utils.PreferenceManager;
+
+import java.util.TreeMap;
+
+import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
+
+public class SettingActivity extends FragmentActivity implements AuthDialogFragment.Callback{
 	private TreeMap<String, String> mSetsMap = null;
 	private static final String LOGTAG = "SettingActivity";
 	public static final String ICON_NAME = "icon.dat";
@@ -44,8 +43,6 @@ public class SettingActivity extends Activity {
 		setContentView(R.layout.setting);
 		// mIconView = (ImageView) findViewById(R.id.img_icon);
 
-		// initalization
-		SettingManager.getInstance(this);
 		prepareUserAccount();
 		prepareSetsPart();
 	}
@@ -88,9 +85,9 @@ public class SettingActivity extends Activity {
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(SettingActivity.this,
-						AuthActivity.class);
-				startActivity(intent);
+                getSupportFragmentManager().beginTransaction()
+                        .add(AuthDialogFragment.newInstance(SettingActivity.this), AuthDialogFragment.TAG)
+                        .commitAllowingStateLoss();
 			}
 		});
 
@@ -99,12 +96,11 @@ public class SettingActivity extends Activity {
 	}
 
 	private void updateUserInfomation() {
-		OAuth auth = SettingManager.getInstance(this).getAuth();
-		if (auth == null)
-			return;
-		User user = auth.getUser();
-		TextView tv = (TextView) findViewById(R.id.label_user_name);
-		tv.setText(user.getUsername());
+        final String userName = PreferenceManager.getInstance().getUserName();
+        if(!TextUtils.isEmpty(userName)){
+            TextView tv = (TextView) findViewById(R.id.label_user_name);
+            tv.setText(userName);
+        }
 
 		/*
 		 * // set icon if(DEBUG){ Log.d(LOGTAG,
@@ -142,10 +138,10 @@ public class SettingActivity extends Activity {
 					}
 					String sid = resolveIdByTitle((String) parent.getAdapter()
 							.getItem(position), mSetsMap);
-					SettingManager.getInstance(getApplicationContext()).saveDefaultSetsId(sid);
+					PreferenceManager.getInstance().saveDefaultSetsId(sid);
 					if (DEBUG) {
 						Log.d(LOGTAG, "saved value: "
-								+ SettingManager.getInstance(getApplicationContext())
+								+ PreferenceManager.getInstance()
 										.getDefaultSetsId());
 					}
 				}
@@ -184,7 +180,7 @@ public class SettingActivity extends Activity {
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 		// TODO: make speficied sets selected
-		String defaultSetId = SettingManager.getInstance(getApplicationContext()).getDefaultSetsId();
+		String defaultSetId = PreferenceManager.getInstance().getDefaultSetsId();
 		int defaultPosition = 0;
 		for (String setsId : setsMap.keySet()) {
 			if (setsId.equals(defaultSetId))
@@ -208,7 +204,7 @@ public class SettingActivity extends Activity {
 //			}
 //		}
 		// add blank for no setting
-		setsMap.put(SettingManager.BLANK_SETS_ID, "blank");
+		setsMap.put(PreferenceManager.BLANK_SETS_ID, "blank");
 		updateSpinnerWithMap(setsSpinner, setsMap);
 //		util.savePhotosets(setsMap);
 	}
@@ -229,4 +225,9 @@ public class SettingActivity extends Activity {
 		else
 			return true;
 	}
+
+    @Override
+    public void onOAuthDone(OAuth result) {
+        updateUserInfomation();
+    }
 }

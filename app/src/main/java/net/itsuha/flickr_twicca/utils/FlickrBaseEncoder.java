@@ -1,4 +1,4 @@
-package net.itsuha.flickr_twicca.util;
+package net.itsuha.flickr_twicca.utils;
 
 public class FlickrBaseEncoder {
 	protected static String alphabetString = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";

@@ -1,20 +1,23 @@
 package net.itsuha.flickr_twicca.upload;
 
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
-import net.itsuha.flickr_twicca.R;
-import net.itsuha.flickr_twicca.setting.AuthActivity;
-import net.itsuha.flickr_twicca.util.SettingManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-public class UploadActivity extends Activity {
+import com.googlecode.flickrjandroid.oauth.OAuth;
+
+import net.itsuha.flickr_twicca.R;
+import net.itsuha.flickr_twicca.setting.SettingActivity;
+import net.itsuha.flickr_twicca.utils.FlickrHelper;
+import net.itsuha.flickr_twicca.utils.PreferenceManager;
+
+import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
+
+public class UploadActivity extends Activity implements  UploadTask.Callback{
 	private static final String LOGTAG = "UploadActivity";
 	/** Label for receiving photo URL */
 	public static final String URL = "URL";
@@ -25,31 +28,19 @@ public class UploadActivity extends Activity {
 	/** Value for upload status */
 	public static final int FAILURE = 1;
 	private ProgressDialog mDialog = null;
-	private UploadThread mUpThread;
+	private UploadTask mTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.upload);
 
-		SettingManager setting = SettingManager.getInstance(this);
-//		Auth auth = setting.getAuth();
-//		if (auth == null) {
-//			Intent intent = new Intent(this, AuthActivity.class);
-//			startActivityForResult(intent, 0);
-//		} else {
-//			showProgressDialog();
-//			startUploadThread();
-//		}
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
+        OAuth oauth = PreferenceManager.getInstance().loadSavedOAuth();
+		if (oauth == null) {
+			Intent intent = new Intent(this, SettingActivity.class);
+		} else {
 			showProgressDialog();
 			startUploadThread();
-		} else {
-			finish();
 		}
 	}
 
@@ -57,32 +48,8 @@ public class UploadActivity extends Activity {
 		Intent callIntent = getIntent();
 		Uri fileUri = callIntent.getData();
 		String tweet = callIntent.getStringExtra(Intent.EXTRA_TEXT);
-		mUpThread = new UploadThread(new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				Bundle bundle = msg.getData();
-				int status = bundle.getInt(STATUS);
-				switch (status) {
-				case SUCCESS:
-					Uri photoUrl = bundle.getParcelable(URL);
-					if (DEBUG)
-						Log.d(LOGTAG, "result: " + photoUrl);
-					Intent returnIntent = new Intent();
-					returnIntent.setData(photoUrl);
-					setResult(Activity.RESULT_OK, returnIntent);
-					dismissProgressDialog();
-					finish();
-					break;
-				case FAILURE:
-					dismissProgressDialog();
-					finish();
-				default:
-					break;
-				}
-			}
-
-		}, this, fileUri, tweet);
-		mUpThread.start();
+		mTask = new UploadTask(this);
+        mTask.execute(new UploadTask.Param(fileUri, tweet));
 	}
 
 	private void showProgressDialog() {
@@ -96,7 +63,7 @@ public class UploadActivity extends Activity {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						mUpThread.cancel();
+						mTask.cancel();
 						finish();
 					}
 				});
@@ -110,4 +77,21 @@ public class UploadActivity extends Activity {
 		}
 	}
 
+    @Override
+    public void onUploadSuccess(String photoId) {
+        Uri photoUrl = FlickrHelper.getShortUrl(photoId);
+        if (DEBUG)
+            Log.d(LOGTAG, "result: " + photoUrl);
+        Intent returnIntent = new Intent();
+        returnIntent.setData(photoUrl);
+        setResult(Activity.RESULT_OK, returnIntent);
+        dismissProgressDialog();
+        finish();
+    }
+
+    @Override
+    public void onUploadFail() {
+        dismissProgressDialog();
+        finish();
+    }
 }

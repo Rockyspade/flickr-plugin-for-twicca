@@ -1,21 +1,16 @@
-package net.itsuha.flickr_twicca.util;
+package net.itsuha.flickr_twicca.utils;
 
-import static net.itsuha.flickr_twicca.util.LogConfig.DEBUG;
+import android.content.Context;
+import android.util.Log;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
 import java.util.TreeMap;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
-import android.content.Context;
-import android.util.Log;
+import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
 
 //import com.aetrion.flickr.Flickr;
 //import com.aetrion.flickr.FlickrException;
@@ -39,7 +34,7 @@ public class PhotosetsUtil {
 //	public Collection<Photoset> getPhotosetsFromFlickr() {
 //		String usrId;
 //		if (mAuth == null) {
-//			Auth auth = SettingManager.getInstance().getAuth();
+//			Auth auth = PreferenceManager.getInstance().getAuth();
 //			if (auth == null)
 //				return null;
 //			else
