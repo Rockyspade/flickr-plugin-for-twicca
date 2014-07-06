@@ -24,18 +24,18 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.auth.Permission;
+//import com.aetrion.flickr.Flickr;
+//import com.aetrion.flickr.FlickrException;
+//import com.aetrion.flickr.REST;
+//import com.aetrion.flickr.RequestContext;
+//import com.aetrion.flickr.auth.Auth;
+//import com.aetrion.flickr.auth.AuthInterface;
+//import com.aetrion.flickr.auth.Permission;
 
 public class AuthActivity extends Activity {
-	private AuthInterface mAuthInterface;
+//	private AuthInterface mAuthInterface;
 	private String mFrob = "";
-	private Auth mAuth;
+//	private Auth mAuth;
 	private static final String LOGTAG = "AuthActivity";
 	private static final String FROB = "FROB";
 	private static final String URL = "URL";
@@ -63,28 +63,28 @@ public class AuthActivity extends Activity {
 			AppProperties prop = AppProperties.getInstance();
 			String apiKey = prop.getApiKey();
 			String secret = prop.getSecret();
-			Flickr flickr;
-			try {
-				flickr = new Flickr(apiKey, secret, new REST());
-			} catch (ParserConfigurationException e) {
-				Log.e(LOGTAG, "ParserConfigurationException");
-				return;
-			}
+//			Flickr flickr;
+//			try {
+////				flickr = new Flickr(apiKey, secret, new REST());
+//			} catch (ParserConfigurationException e) {
+//				Log.e(LOGTAG, "ParserConfigurationException");
+//				return;
+//			}
 			// RequestContext requestContext;
 			// requestContext = RequestContext.getRequestContext();
-			mAuthInterface = flickr.getAuthInterface();
+//			mAuthInterface = flickr.getAuthInterface();
 		}
 		Button authButton = (Button) findViewById(R.id.btn_complete);
-		authButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				try {
-					saveAuthResult();
-					showAuthResultDialog();
-				} catch (Exception e) {
-					showAuthErrorDialog();
-				}
-			}
-		});
+//		authButton.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//				try {
+//					saveAuthResult();
+//					showAuthResultDialog();
+//				} catch (Exception e) {
+//					showAuthErrorDialog();
+//				}
+//			}
+//		});
 	}
 
 	@Override
@@ -108,44 +108,44 @@ public class AuthActivity extends Activity {
 		AppProperties prop = AppProperties.getInstance();
 		String apiKey = prop.getApiKey();
 		String secret = prop.getSecret();
-		Flickr flickr = new Flickr(apiKey, secret, new REST());
-		Flickr.debugStream = false;
-		@SuppressWarnings("unused")
-		RequestContext requestContext;
-		requestContext = RequestContext.getRequestContext();
-		mAuthInterface = flickr.getAuthInterface();
-		try {
-			mFrob = mAuthInterface.getFrob();
-		} catch (FlickrException e) {
-			if (DEBUG)
-				Log.d(LOGTAG, "FlickrException");
-		}
-		if (DEBUG)
-			Log.d(LOGTAG, "frob: " + mFrob); //$NON-NLS-1$
-		URL authUrl = mAuthInterface.buildAuthenticationUrl(Permission.WRITE,
-				mFrob);
+//		Flickr flickr = new Flickr(apiKey, secret, new REST());
+//		Flickr.debugStream = false;
+//		@SuppressWarnings("unused")
+//		RequestContext requestContext;
+//		requestContext = RequestContext.getRequestContext();
+//		mAuthInterface = flickr.getAuthInterface();
+//		try {
+//			mFrob = mAuthInterface.getFrob();
+//		} catch (FlickrException e) {
+//			if (DEBUG)
+//				Log.d(LOGTAG, "FlickrException");
+//		}
+//		if (DEBUG)
+//			Log.d(LOGTAG, "frob: " + mFrob); //$NON-NLS-1$
+//		URL authUrl = mAuthInterface.buildAuthenticationUrl(Permission.WRITE,
+//				mFrob);
 		TextView authUrlText = (TextView) findViewById(R.id.auth_url);
-		authUrlText.setText(authUrl.toString());
+//		authUrlText.setText(authUrl.toString());
 	}
 
-	private void saveAuthResult() throws IOException, SAXException,
-			FlickrException {
-		Auth auth = mAuthInterface.getToken(mFrob);
-		mAuth = auth;
+//	private void saveAuthResult() throws IOException, SAXException,
+//			FlickrException {
+//		Auth auth = mAuthInterface.getToken(mFrob);
+//		mAuth = auth;
+//
+//		/* store authentication token */
+//		SettingManager manager = SettingManager.getInstance(this);
+//		manager.saveAuth(auth);
+//	}
 
-		/* store authentication token */
-		SettingManager manager = SettingManager.getInstance(this);
-		manager.saveAuth(auth);
-	}
-
-	private void showAuthResultDialog() {
-		Auth auth = mAuth;
-		String title = getString(R.string.title_login_success);
-		String message = MessageFormat.format(
-				getString(R.string.msg_logined_as), auth.getUser()
-						.getUsername());
-		showDialog(title, message);
-	}
+//	private void showAuthResultDialog() {
+//		Auth auth = mAuth;
+//		String title = getString(R.string.title_login_success);
+//		String message = MessageFormat.format(
+//				getString(R.string.msg_logined_as), auth.getUser()
+//						.getUsername());
+//		showDialog(title, message);
+//	}
 
 	private void showAuthErrorDialog() {
 		String title = getString(R.string.title_error);

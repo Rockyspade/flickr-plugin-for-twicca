@@ -26,9 +26,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photosets.Photoset;
+import com.googlecode.flickrjandroid.oauth.OAuth;
+import com.googlecode.flickrjandroid.people.User;
+import com.googlecode.flickrjandroid.photosets.Photoset;
 
 public class SettingActivity extends Activity {
 	private TreeMap<String, String> mSetsMap = null;
@@ -99,7 +99,7 @@ public class SettingActivity extends Activity {
 	}
 
 	private void updateUserInfomation() {
-		Auth auth = SettingManager.getInstance(this).getAuth();
+		OAuth auth = SettingManager.getInstance(this).getAuth();
 		if (auth == null)
 			return;
 		User user = auth.getUser();
@@ -197,20 +197,20 @@ public class SettingActivity extends Activity {
 
 	private void updateSetsSpinnerWithFlickr() {
 		Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
-		PhotosetsUtil util = new PhotosetsUtil(this);
-		Collection<Photoset> sets = util.getPhotosetsFromFlickr();
-		if (sets == null)
-			return;
+//		PhotosetsUtil util = new PhotosetsUtil(this);
+//		Collection<Photoset> sets = util.getPhotosetsFromFlickr();
+//		if (sets == null)
+//			return;
 		TreeMap<String, String> setsMap = new TreeMap<String, String>();
-		if (sets != null) {
-			for (Photoset set : sets) {
-				setsMap.put(set.getId(), set.getTitle());
-			}
-		}
+//		if (sets != null) {
+//			for (Photoset set : sets) {
+//				setsMap.put(set.getId(), set.getTitle());
+//			}
+//		}
 		// add blank for no setting
 		setsMap.put(SettingManager.BLANK_SETS_ID, "blank");
 		updateSpinnerWithMap(setsSpinner, setsMap);
-		util.savePhotosets(setsMap);
+//		util.savePhotosets(setsMap);
 	}
 
 	private String resolveIdByTitle(String title,

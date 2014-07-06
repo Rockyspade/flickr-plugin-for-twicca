@@ -17,16 +17,16 @@ import org.xml.sax.SAXException;
 import android.content.Context;
 import android.util.Log;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.photosets.Photoset;
-import com.aetrion.flickr.photosets.PhotosetsInterface;
+//import com.aetrion.flickr.Flickr;
+//import com.aetrion.flickr.FlickrException;
+//import com.aetrion.flickr.REST;
+//import com.aetrion.flickr.auth.Auth;
+//import com.aetrion.flickr.photosets.Photoset;
+//import com.aetrion.flickr.photosets.PhotosetsInterface;
 
 public class PhotosetsUtil {
-	private static Auth mAuth = null;
-	private static PhotosetsInterface mPhotosetsIf = null;
+//	private static Auth mAuth = null;
+//	private static PhotosetsInterface mPhotosetsIf = null;
 	private Context mCtx;
 	private static final String LOGTAG = "PhotosetsUtil";
 	private static final String SAVE_FILE_NAME = "sets.dat";
@@ -35,49 +35,49 @@ public class PhotosetsUtil {
 		mCtx = ctx;
 	}
 
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public Collection<Photoset> getPhotosetsFromFlickr() {
-		String usrId;
-		if (mAuth == null) {
-			Auth auth = SettingManager.getInstance().getAuth();
-			if (auth == null)
-				return null;
-			else
-				usrId = auth.getUser().getId();
-		} else {
-			usrId = mAuth.getUser().getId();
-		}
-		if (DEBUG)
-			Log.d(LOGTAG, "usrId: " + usrId);
-		if (mPhotosetsIf == null) {
-			AppProperties prop = AppProperties.getInstance();
-			Flickr flickr;
-			try {
-				flickr = new Flickr(prop.getApiKey(), prop.getSecret(),
-						new REST());
-			} catch (ParserConfigurationException e) {
-				if (DEBUG)
-					Log.e(LOGTAG, "ParserConfigurationException");
-				return null;
-			}
-			mPhotosetsIf = flickr.getPhotosetsInterface();
-		}
-		try {
-			return mPhotosetsIf.getList(usrId).getPhotosets();
-		} catch (IOException e) {
-			if (DEBUG)
-				Log.e(LOGTAG, "IOException");
-			return null;
-		} catch (SAXException e) {
-			if (DEBUG)
-				Log.e(LOGTAG, "SAXException");
-			return null;
-		} catch (FlickrException e) {
-			if (DEBUG)
-				Log.e(LOGTAG, "FlickrException");
-			return null;
-		}
-	}
+//	@SuppressWarnings({ "unchecked", "deprecation" })
+//	public Collection<Photoset> getPhotosetsFromFlickr() {
+//		String usrId;
+//		if (mAuth == null) {
+//			Auth auth = SettingManager.getInstance().getAuth();
+//			if (auth == null)
+//				return null;
+//			else
+//				usrId = auth.getUser().getId();
+//		} else {
+//			usrId = mAuth.getUser().getId();
+//		}
+//		if (DEBUG)
+//			Log.d(LOGTAG, "usrId: " + usrId);
+//		if (mPhotosetsIf == null) {
+//			AppProperties prop = AppProperties.getInstance();
+//			Flickr flickr;
+//			try {
+//				flickr = new Flickr(prop.getApiKey(), prop.getSecret(),
+//						new REST());
+//			} catch (ParserConfigurationException e) {
+//				if (DEBUG)
+//					Log.e(LOGTAG, "ParserConfigurationException");
+//				return null;
+//			}
+//			mPhotosetsIf = flickr.getPhotosetsInterface();
+//		}
+//		try {
+//			return mPhotosetsIf.getList(usrId).getPhotosets();
+//		} catch (IOException e) {
+//			if (DEBUG)
+//				Log.e(LOGTAG, "IOException");
+//			return null;
+//		} catch (SAXException e) {
+//			if (DEBUG)
+//				Log.e(LOGTAG, "SAXException");
+//			return null;
+//		} catch (FlickrException e) {
+//			if (DEBUG)
+//				Log.e(LOGTAG, "FlickrException");
+//			return null;
+//		}
+//	}
 
 	public void savePhotosets(TreeMap<String, String> setsMap) {
 		try {

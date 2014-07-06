@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">My Application</string>
     <string name="btn_show_license">Show full license</string>
     <string name="label_about">About</string>
     <string name="label_open_url">1. Tap URL below and authorize in Flickr</string>

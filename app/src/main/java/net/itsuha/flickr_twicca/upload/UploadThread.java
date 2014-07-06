@@ -19,13 +19,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.photosets.PhotosetsInterface;
-import com.aetrion.flickr.uploader.UploadMetaData;
-import com.aetrion.flickr.uploader.Uploader;
+import com.googlecode.flickrjandroid.Flickr;
+import com.googlecode.flickrjandroid.FlickrException;
+import com.googlecode.flickrjandroid.RequestContext;
+import com.googlecode.flickrjandroid.oauth.OAuth;
+import com.googlecode.flickrjandroid.uploader.UploadMetaData;
+import com.googlecode.flickrjandroid.uploader.Uploader;
+
+//import com.aetrion.flickr.Flickr;
+//import com.aetrion.flickr.FlickrException;
+//import com.aetrion.flickr.RequestContext;
+//import com.aetrion.flickr.auth.Auth;
+//import com.aetrion.flickr.photosets.PhotosetsInterface;
+//import com.aetrion.flickr.uploader.UploadMetaData;
+//import com.aetrion.flickr.uploader.Uploader;
 
 public class UploadThread extends Thread {
 	private static final String LOGTAG = "UploadThread";
@@ -68,8 +75,8 @@ public class UploadThread extends Thread {
 		String apiKey = AppProperties.getInstance().getApiKey();
 		String secret = AppProperties.getInstance().getSecret();
 
-		Auth auth = SettingManager.getInstance().getAuth();
-		RequestContext.getRequestContext().setAuth(auth);
+		OAuth auth = SettingManager.getInstance().getAuth();
+		RequestContext.getRequestContext().setOAuth(auth);
 
 		Flickr flickr = new Flickr(apiKey, secret, new Flickr(apiKey)
 				.getTransport());
@@ -96,20 +103,20 @@ public class UploadThread extends Thread {
 		}
 
 		String photoId = "";
-		try {
-			photoId = uploader.upload(ins, metadata);
-		} catch (IOException e) {
-			return null;
-		} catch (FlickrException e) {
-			return null;
-		} catch (SAXException e) {
-			return null;
-		}
+//		try {
+//			photoId = uploader.upload(ins, metadata);
+//		} catch (IOException e) {
+//			return null;
+//		} catch (FlickrException e) {
+//			return null;
+//		} catch (SAXException e) {
+//			return null;
+//		}
 		mPhotoId = photoId;
 		if(mCancelFlag)return null;
 		
 		//add the photo to the specified sets
-		addPhoto2Sets();
+//		addPhoto2Sets();
 		
 		String shortId = FlickrBaseEncoder.encode(Long.valueOf(photoId));
 		String shortUrl = "http://flic.kr/p/" + shortId;
@@ -121,19 +128,19 @@ public class UploadThread extends Thread {
 		return Uri.parse(shortUrl);
 	}
 
-	@SuppressWarnings("deprecation")
-	private void addPhoto2Sets() {
-		String setsId = SettingManager.getInstance().getDefaultSetsId();
-		if(!setsId.equals(SettingManager.BLANK_SETS_ID)){
-			PhotosetsInterface psif = mFlickr.getPhotosetsInterface();
-			try {
-				psif.addPhoto(setsId, mPhotoId);
-			} catch (IOException e) {
-			} catch (SAXException e) {
-			} catch (FlickrException e) {
-			}
-		}
-	}
+//	@SuppressWarnings("deprecation")
+//	private void addPhoto2Sets() {
+//		String setsId = SettingManager.getInstance().getDefaultSetsId();
+//		if(!setsId.equals(SettingManager.BLANK_SETS_ID)){
+//			PhotosetsInterface psif = mFlickr.getPhotosetsInterface();
+//			try {
+//				psif.addPhoto(setsId, mPhotoId);
+//			} catch (IOException e) {
+//			} catch (SAXException e) {
+//			} catch (FlickrException e) {
+//			}
+//		}
+//	}
 
 	public void cancel() {
 		mCancelFlag = true;

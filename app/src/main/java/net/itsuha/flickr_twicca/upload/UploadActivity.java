@@ -14,9 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.aetrion.flickr.auth.Auth;
-import com.googlecode.flickrjandroid.oauth.OAuth;
-
 public class UploadActivity extends Activity {
 	private static final String LOGTAG = "UploadActivity";
 	/** Label for receiving photo URL */
@@ -36,14 +33,14 @@ public class UploadActivity extends Activity {
 		setContentView(R.layout.upload);
 
 		SettingManager setting = SettingManager.getInstance(this);
-		Auth auth = setting.getAuth();
-		if (auth == null) {
-			Intent intent = new Intent(this, AuthActivity.class);
-			startActivityForResult(intent, 0);
-		} else {
-			showProgressDialog();
-			startUploadThread();
-		}
+//		Auth auth = setting.getAuth();
+//		if (auth == null) {
+//			Intent intent = new Intent(this, AuthActivity.class);
+//			startActivityForResult(intent, 0);
+//		} else {
+//			showProgressDialog();
+//			startUploadThread();
+//		}
 	}
 
 	@Override
