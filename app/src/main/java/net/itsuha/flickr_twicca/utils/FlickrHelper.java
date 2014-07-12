@@ -2,7 +2,6 @@ package net.itsuha.flickr_twicca.utils;
 
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.googlecode.flickrjandroid.Flickr;
 import com.googlecode.flickrjandroid.REST;
@@ -22,8 +21,7 @@ public final class FlickrHelper {
 
 	public static Flickr getFlickr() {
 		try {
-			Flickr f = new Flickr(API_KEY, API_SEC, new REST());
-			return f;
+            return new Flickr(API_KEY, API_SEC, new REST());
 		} catch (ParserConfigurationException e) {
 			return null;
 		}

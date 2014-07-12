@@ -12,7 +12,6 @@ import android.widget.Toast;
 public class MyApp extends Application {
     private static final String LOGTAG = MyApp.class.getSimpleName();
     private static MyApp sInstance;
-    public static boolean DEBUGGABLE = false;
 
     public static MyApp getInstance(){
         return sInstance;
@@ -24,7 +23,6 @@ public class MyApp extends Application {
 
         // Initialization
         sInstance = this;
-        DEBUGGABLE = isDebuggable();
     }
 
     public static void toast(String message){
@@ -33,20 +31,5 @@ public class MyApp extends Application {
 
     public static void toast(@StringRes int resId){
         Toast.makeText(sInstance, resId, Toast.LENGTH_LONG).show();
-    }
-
-
-    public static boolean isDebuggable() {
-        PackageManager manager = sInstance.getPackageManager();
-        ApplicationInfo info = null;
-        try {
-            info = manager.getApplicationInfo(sInstance.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-        if ((info.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            return true;
-        }
-        return false;
     }
 }

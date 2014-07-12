@@ -1,9 +1,9 @@
 package net.itsuha.flickr_twicca.utils;
 
 public class FlickrBaseEncoder {
-	protected static String alphabetString = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
-	protected static char[] alphabet = alphabetString.toCharArray();
-	protected static int base_count = alphabet.length;
+	protected static final String alphabetString = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+	protected static final char[] alphabet = alphabetString.toCharArray();
+	protected static final int base_count = alphabet.length;
 	
 	public static String encode(long num){
 		String result = "";

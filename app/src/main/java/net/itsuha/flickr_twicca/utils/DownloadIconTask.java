@@ -21,7 +21,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class DownloadIconTask extends AsyncTask<String, Integer, Boolean> {
-	private SettingActivity mCaller;
+	private final SettingActivity mCaller;
 
 	public DownloadIconTask(SettingActivity caller) {
 		mCaller = caller;

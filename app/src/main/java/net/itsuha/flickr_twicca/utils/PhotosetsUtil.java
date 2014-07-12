@@ -22,7 +22,7 @@ import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
 public class PhotosetsUtil {
 //	private static Auth mAuth = null;
 //	private static PhotosetsInterface mPhotosetsIf = null;
-	private Context mCtx;
+	private final Context mCtx;
 	private static final String LOGTAG = "PhotosetsUtil";
 	private static final String SAVE_FILE_NAME = "sets.dat";
 

@@ -217,10 +217,7 @@ public class SettingActivity extends ActionBarActivity implements AuthDialogFrag
 
     private boolean isFullyFunctionalModel() {
         // if (VERSION.SDK_INT == VERSION_CODES.DONUT)
-        if (Build.MODEL.equals("IS01") || Build.MODEL.equals("Docomo HT-03A"))
-            return false;
-        else
-            return true;
+        return !(Build.MODEL.equals("IS01") || Build.MODEL.equals("Docomo HT-03A"));
     }
 
     @Override

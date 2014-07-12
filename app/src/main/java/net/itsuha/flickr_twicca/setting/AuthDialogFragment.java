@@ -117,7 +117,7 @@ public class AuthDialogFragment extends DialogFragment {
             AsyncTask<String, Integer, OAuth> {
         private static final String LOGTAG = GetOAuthTokenTask.class.getSimpleName();
 
-        private AuthDialogFragment mAuthDialog;
+        private final AuthDialogFragment mAuthDialog;
 
         GetOAuthTokenTask(AuthDialogFragment context) {
             this.mAuthDialog = context;

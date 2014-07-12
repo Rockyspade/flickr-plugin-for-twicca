@@ -28,8 +28,8 @@ import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
 public class UploadTask extends AsyncTask<UploadTask.Param, Void, String> {
 
     public static class Param {
-        public Uri file;
-        public String tweet;
+        public final Uri file;
+        public final String tweet;
 
         public Param(Uri file, String tweet) {
             this.file = file;
@@ -45,7 +45,7 @@ public class UploadTask extends AsyncTask<UploadTask.Param, Void, String> {
 	private static final String LOGTAG = "UploadTask";
 	private boolean mCancelFlag = false;
 
-    private WeakReference<Callback> mReference;
+    private final WeakReference<Callback> mReference;
 
 	public UploadTask(Callback callback) {
         mReference = new WeakReference<Callback>(callback);

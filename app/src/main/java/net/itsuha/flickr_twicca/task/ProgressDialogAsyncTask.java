@@ -17,8 +17,8 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends
 		AsyncTask<Params, Progress, Result>{
 	
 	protected ProgressDialog mDialog;
-	protected Activity mActivity;
-	protected String mDialogMessage;
+	protected final Activity mActivity;
+	protected final String mDialogMessage;
 	
 	/**
 	 * Constructor.

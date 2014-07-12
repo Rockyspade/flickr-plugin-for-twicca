@@ -28,7 +28,7 @@ public class AboutActivity extends Activity {
 		TextView notice = (TextView) findViewById(R.id.label_notice);
 		notice.setText(readAsset("NOTICE"));
 		TextView version = (TextView) findViewById(R.id.label_version);
-		version.setText("Version: " + readVersion());
+        version.setText(getString(R.string.version, readVersion()));
 		Button showLicenseBtn = (Button) findViewById(R.id.btn_show_license);
 		showLicenseBtn.setOnClickListener(new OnClickListener() {
 			@Override

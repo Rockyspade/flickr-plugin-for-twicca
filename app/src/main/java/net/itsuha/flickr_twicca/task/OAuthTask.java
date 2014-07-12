@@ -37,14 +37,9 @@ public class OAuthTask extends AsyncTask<Void, Integer, String> {
 	/**
 	 * The context.
 	 */
-	private Context mContext;
+	private final Context mContext;
 
-	/**
-	 * The progress dialog before going to the browser.
-	 */
-	private ProgressDialog mProgressDialog;
-
-	/**
+    /**
 	 * Constructor.
 	 * 
 	 * @param context
@@ -52,21 +47,6 @@ public class OAuthTask extends AsyncTask<Void, Integer, String> {
 	public OAuthTask(Context context) {
 		super();
 		this.mContext = context;
-	}
-
-	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-//		mProgressDialog = ProgressDialog.show(mContext,
-//				"", mContext.getString(R.string.auth_gen_req_token)); //$NON-NLS-1$
-//		mProgressDialog.setCanceledOnTouchOutside(true);
-//		mProgressDialog.setCancelable(true);
-//		mProgressDialog.setOnCancelListener(new OnCancelListener() {
-//			@Override
-//			public void onCancel(DialogInterface dlg) {
-//				OAuthTask.this.cancel(true);
-//			}
-//		});
 	}
 
 	/*
@@ -91,9 +71,6 @@ public class OAuthTask extends AsyncTask<Void, Integer, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (mProgressDialog != null) {
-			mProgressDialog.dismiss();
-		}
 		if (result != null && !result.startsWith("error") ) { //$NON-NLS-1$
 			mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri
 					.parse(result)));

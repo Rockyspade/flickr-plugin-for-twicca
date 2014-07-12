@@ -11,8 +11,7 @@ import com.googlecode.flickrjandroid.people.User;
 
 public class PreferenceManager {
     private static PreferenceManager sInstance = null;
-    private Context mContext = null;
-    private SharedPreferences mPreference;
+    private final SharedPreferences mPreference;
     @SuppressWarnings("unused")
     private static final String LOGTAG = PreferenceManager.class.getSimpleName();
     private static final String DEFAULT_SETS_ID = "default_sets_id";
@@ -26,8 +25,7 @@ public class PreferenceManager {
 
 
     private PreferenceManager(Context ctx) {
-        mContext = ctx;
-        mPreference = android.preference.PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPreference = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
     public static synchronized PreferenceManager getInstance() {
@@ -48,8 +46,7 @@ public class PreferenceManager {
     }
 
     public String getFlickrToken() {
-        String token = mPreference.getString(FLICKR_TOKEN, null);
-        return token;
+        return mPreference.getString(FLICKR_TOKEN, null);
     }
 
     public OAuth loadSavedOAuth() {
