@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        myConfig
-    }
     compileSdkVersion 19
     buildToolsVersion '20.0.0'
     defaultConfig {
@@ -14,12 +11,17 @@ android {
         versionCode 50
         versionName "0.5.0"
     }
+
+    // load signingConfigs from HOME directory
+    apply from: "${System.env.HOME}/signingConfigs.gradle", to: android
+
     buildTypes {
         release {
             runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.dmp
         }
     }
+
 }
 
 repositories {
@@ -36,16 +38,3 @@ dependencies {
     compile 'com.android.support:support-v4:20.+'
 }
 
-// Read keystore configuration from ~/gradle.properties
-if (project.hasProperty('storeFile')) {
-    android.signingConfigs.myConfig.storeFile = file(storeFile)
-}
-if (project.hasProperty('storePassword')) {
-    android.signingConfigs.myConfig.storePassword = storePassword
-}
-if (project.hasProperty('keyAlias')) {
-    android.signingConfigs.myConfig.keyAlias = keyAlias
-}
-if (project.hasProperty('keyPassword')) {
-    android.signingConfigs.myConfig.keyPassword = keyPassword
-}
