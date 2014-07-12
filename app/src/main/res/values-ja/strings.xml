@@ -6,19 +6,18 @@
 	<string name="label_instruction">Instruction</string>
 	<string name="label_upload_sets">デフォルトSet</string>
 	<string name="label_not_authorized">認証されていません</string>
-	<string name="label_useraccount">ユーザアカウント</string>
+	<string name="label_useraccount">ユーザーアカウント</string>
 	<string name="label_doesnt_support">この機能はお使いの端末ではサポートされていません</string>
 	<string name="btn_set_new_account">新規アカウント設定</string>
 	<string name="btn_auth_complete">Authentication Completed!</string>
-    <string name="btn_update">Flickrから取得</string>
+    <string name="btn_update">Flickr から取得</string>
     <string name="msg_wait">しばらくお待ちください</string>
     <string name="msg_logined_as">{0}としてログインしました</string>
     <string name="msg_auth_failure">認証エラーです</string>
     <string name="title_uploading">アップロードしています</string>
     <string name="title_error">エラー</string>
     <string name="title_login_success">ログイン成功</string>
-	<string name="ok">OK</string>
-	<string name="flickr">Flickr</string>
-	<string name="app_name">twicca Flickr plugin</string>
-	<string name="app_label">Flickrプラグイン for twicca</string>
+    <string name="auth_dialog_message">ブラウザで認証してください</string>
+    <string name="button_auth">ブラウザを開く</string>
+    <string name="app_name">Flickr プラグイン for twicca</string>
 </resources>

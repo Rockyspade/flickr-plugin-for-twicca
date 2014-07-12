@@ -19,7 +19,8 @@
     <string name="title_login_success">Login success</string>
     <string name="ok">OK</string>
     <string name="flickr">Flickr</string>
-    <string name="app_name">twicca Flickr plugin</string>
-    <string name="app_label">Flickr plug-in for twicca</string>
+    <string name="app_name">Flickr plugin for twicca</string>
     <string name="auth_gen_req_token">auth_gen_req_token</string>
+    <string name="auth_dialog_message">Authorize in browser</string>
+    <string name="button_auth">Open Browser</string>
 </resources>

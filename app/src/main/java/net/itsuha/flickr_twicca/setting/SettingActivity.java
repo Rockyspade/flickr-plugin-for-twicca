@@ -3,7 +3,7 @@ package net.itsuha.flickr_twicca.setting;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -29,205 +29,209 @@ import java.util.TreeMap;
 
 import static net.itsuha.flickr_twicca.BuildConfig.DEBUG;
 
-public class SettingActivity extends FragmentActivity implements AuthDialogFragment.Callback{
-	private TreeMap<String, String> mSetsMap = null;
-	private static final String LOGTAG = "SettingActivity";
-	public static final String ICON_NAME = "icon.dat";
-	public static final String ICON = "icon";
-	private ImageView mIconView;
+public class SettingActivity extends ActionBarActivity implements AuthDialogFragment.Callback {
+    private TreeMap<String, String> mSetsMap = null;
+    private static final String LOGTAG = "SettingActivity";
+    public static final String ICON_NAME = "icon.dat";
+    public static final String ICON = "icon";
+    private ImageView mIconView;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.setting);
-		// mIconView = (ImageView) findViewById(R.id.img_icon);
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.setting);
+        // mIconView = (ImageView) findViewById(R.id.img_icon);
 
-		prepareUserAccount();
-		prepareSetsPart();
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		updateUserInfomation();
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.settings, menu);
-	    return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	    case R.id.about:
-	    	Intent intent = new Intent(this, AboutActivity.class);
-	    	startActivity(intent);
-	        return true;
-	    default:
-	        return super.onOptionsItemSelected(item);
-	    }
-	}
+        updateUserInfo();
+        // prepareSetsPart();
+    }
 
-	public ImageView getIconView() {
-		return mIconView;
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUserInfo();
+        final PreferenceManager pm = PreferenceManager.getInstance();
+        if (pm.isAuthenticating()) {
+            showAuthDialog();
+            pm.setAuthenticating(false);
+        }
+    }
 
-	/**
-	 * Displays the icon and the user name and sets event listener.
-	 */
-	private void prepareUserAccount() {
-		Button button = (Button) findViewById(R.id.new_account_button);
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(AuthDialogFragment.newInstance(SettingActivity.this), AuthDialogFragment.TAG)
-                        .commitAllowingStateLoss();
-			}
-		});
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.settings, menu);
+        return true;
+    }
 
-		updateUserInfomation();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-	}
+    public ImageView getIconView() {
+        return mIconView;
+    }
 
-	private void updateUserInfomation() {
+    /**
+     * Displays the icon and the user name and sets event listener.
+     */
+    private void updateUserInfo() {
         final String userName = PreferenceManager.getInstance().getUserName();
-        if(!TextUtils.isEmpty(userName)){
+        if (!TextUtils.isEmpty(userName)) {
             TextView tv = (TextView) findViewById(R.id.label_user_name);
             tv.setText(userName);
         }
 
-		/*
-		 * // set icon if(DEBUG){ Log.d(LOGTAG,
-		 * "getIconFarm: "+user.getIconFarm()); Log.d(LOGTAG,
-		 * "getIconServer: "+user.getIconServer()); Log.d(LOGTAG,
-		 * "buddyIconURL: "+user.getBuddyIconUrl()); Log.d(LOGTAG,
-		 * "getId: "+user.getId()); } try { FileInputStream fis =
-		 * openFileInput(ICON_NAME); Drawable icon =
-		 * Drawable.createFromStream(fis, ICON);
-		 * mIconView.setImageDrawable(icon); } catch (FileNotFoundException e) {
-		 * DownloadIconTask task = new DownloadIconTask(this);
-		 * task.execute(user.getBuddyIconUrl()); }
-		 */
-	}
+        final Button button = (Button) findViewById(R.id.new_account_button);
+        if (TextUtils.isEmpty(userName)) {
+            button.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showAuthDialog();
+                }
+            });
+        } else {
+            button.setVisibility(View.GONE);
+        }
+    }
 
-	private void prepareSetsPart() {
-		Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
-		Button updateButton = (Button) findViewById(R.id.update_button);
-		if (isFullyFunctionalModel()) {
-			PhotosetsUtil util = new PhotosetsUtil(this);
-			TreeMap<String, String> setsMap = util.getPhotosetsFromCache();
-			if (setsMap != null)
-				updateSpinnerWithMap(setsSpinner, setsMap);
-			setsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-				/**
-				 * save selected item
-				 */
-				@Override
-				public void onItemSelected(AdapterView<?> parent, View view,
-						int position, long id) {
-					if (DEBUG) {
-						;
-						Log.d(LOGTAG, "selected: "
-								+ parent.getAdapter().getItem(position));
-					}
-					String sid = resolveIdByTitle((String) parent.getAdapter()
-							.getItem(position), mSetsMap);
-					PreferenceManager.getInstance().saveDefaultSetsId(sid);
-					if (DEBUG) {
-						Log.d(LOGTAG, "saved value: "
-								+ PreferenceManager.getInstance()
-										.getDefaultSetsId());
-					}
-				}
+    private void showAuthDialog() {
+        final PreferenceManager pm = PreferenceManager.getInstance();
+        pm.setAuthenticating(true);
+        getSupportFragmentManager().beginTransaction()
+                .add(AuthDialogFragment.newInstance(this), AuthDialogFragment.TAG)
+                .commitAllowingStateLoss();
+    }
 
-				@Override
-				public void onNothingSelected(AdapterView<?> parent) {
-					// TODO Auto-generated method stub
+    private void prepareSetsPart() {
+        Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
+        Button updateButton = (Button) findViewById(R.id.update_button);
+        if (isFullyFunctionalModel()) {
+            PhotosetsUtil util = new PhotosetsUtil(this);
+            TreeMap<String, String> setsMap = util.getPhotosetsFromCache();
+            if (setsMap != null)
+                updateSpinnerWithMap(setsSpinner, setsMap);
+            setsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+                /**
+                 * save selected item
+                 */
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    if (DEBUG) {
+                        Log.d(LOGTAG, "selected: " + parent.getAdapter().getItem(position));
+                    }
+                    String sid = resolveIdByTitle((String) parent.getAdapter()
+                            .getItem(position), mSetsMap);
+                    PreferenceManager.getInstance().saveDefaultSetsId(sid);
+                    if (DEBUG) {
+                        Log.d(LOGTAG, "saved value: "
+                                + PreferenceManager.getInstance()
+                                .getDefaultSetsId());
+                    }
+                }
 
-				}
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // TODO Auto-generated method stub
 
-			});
+                }
 
-			updateButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					updateSetsSpinnerWithFlickr();
-				}
-			});
-		} else {
-			setsSpinner.setVisibility(View.GONE);
-			updateButton.setVisibility(View.GONE);
-			TextView tv = (TextView) findViewById(R.id.label_doesnt_support);
-			tv.setVisibility(View.VISIBLE);
+            });
 
-		}
-	}
+            updateButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateSetsSpinnerWithFlickr();
+                }
+            });
+        } else {
+            setsSpinner.setVisibility(View.GONE);
+            updateButton.setVisibility(View.GONE);
+            TextView tv = (TextView) findViewById(R.id.label_doesnt_support);
+            tv.setVisibility(View.VISIBLE);
 
-	private String[] updateSpinnerWithMap(Spinner spinner,
-			final TreeMap<String, String> setsMap) {
-		mSetsMap = setsMap;
-		final String[] setsArray = setsMap.values().toArray(new String[0]);
+        }
+    }
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, setsArray);
-		adapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		// TODO: make speficied sets selected
-		String defaultSetId = PreferenceManager.getInstance().getDefaultSetsId();
-		int defaultPosition = 0;
-		for (String setsId : setsMap.keySet()) {
-			if (setsId.equals(defaultSetId))
-				break;
-			defaultPosition++;
-		}
-		spinner.setSelection(defaultPosition);
-		return setsArray;
-	}
+    private String[] updateSpinnerWithMap(Spinner spinner,
+                                          final TreeMap<String, String> setsMap) {
+        mSetsMap = setsMap;
+        final String[] setsArray = setsMap.values().toArray(new String[0]);
 
-	private void updateSetsSpinnerWithFlickr() {
-		Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, setsArray);
+        adapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        // TODO: make speficied sets selected
+        String defaultSetId = PreferenceManager.getInstance().getDefaultSetsId();
+        int defaultPosition = 0;
+        for (String setsId : setsMap.keySet()) {
+            if (setsId.equals(defaultSetId))
+                break;
+            defaultPosition++;
+        }
+        spinner.setSelection(defaultPosition);
+        return setsArray;
+    }
+
+    private void updateSetsSpinnerWithFlickr() {
+        Spinner setsSpinner = (Spinner) findViewById(R.id.sets_spinner);
 //		PhotosetsUtil util = new PhotosetsUtil(this);
 //		Collection<Photoset> sets = util.getPhotosetsFromFlickr();
 //		if (sets == null)
 //			return;
-		TreeMap<String, String> setsMap = new TreeMap<String, String>();
+        TreeMap<String, String> setsMap = new TreeMap<String, String>();
 //		if (sets != null) {
 //			for (Photoset set : sets) {
 //				setsMap.put(set.getId(), set.getTitle());
 //			}
 //		}
-		// add blank for no setting
-		setsMap.put(PreferenceManager.BLANK_SETS_ID, "blank");
-		updateSpinnerWithMap(setsSpinner, setsMap);
+        // add blank for no setting
+        setsMap.put(PreferenceManager.BLANK_SETS_ID, "blank");
+        updateSpinnerWithMap(setsSpinner, setsMap);
 //		util.savePhotosets(setsMap);
-	}
+    }
 
-	private String resolveIdByTitle(String title,
-			TreeMap<String, String> setsMap) {
-		for (String id : setsMap.keySet()) {
-			if (title.equals(setsMap.get(id)))
-				return id;
-		}
-		return null;
-	}
+    private String resolveIdByTitle(String title,
+                                    TreeMap<String, String> setsMap) {
+        for (String id : setsMap.keySet()) {
+            if (title.equals(setsMap.get(id)))
+                return id;
+        }
+        return null;
+    }
 
-	private boolean isFullyFunctionalModel() {
-		// if (VERSION.SDK_INT == VERSION_CODES.DONUT)
-		if (Build.MODEL.equals("IS01") || Build.MODEL.equals("Docomo HT-03A"))
-			return false;
-		else
-			return true;
-	}
+    private boolean isFullyFunctionalModel() {
+        // if (VERSION.SDK_INT == VERSION_CODES.DONUT)
+        if (Build.MODEL.equals("IS01") || Build.MODEL.equals("Docomo HT-03A"))
+            return false;
+        else
+            return true;
+    }
 
     @Override
     public void onOAuthDone(OAuth result) {
-        updateUserInfomation();
+        updateUserInfo();
+        onOAuthCancel();
+    }
+
+    @Override
+    public void onOAuthCancel() {
+        final PreferenceManager pm = PreferenceManager.getInstance();
+        pm.setAuthenticating(false);
     }
 }

@@ -22,6 +22,7 @@ public class PreferenceManager {
     private static final String FLICKR_SECRET_TOKEN = "flickr_secret_token";
     private static final String FLICKR_USER_ID = "flickr_user_id";
     private static final String FLICKR_USER_NAME = "flickr_user_name";
+    private static final String AUTHENTICATING = "authenticating";
 
 
     private PreferenceManager(Context ctx) {
@@ -105,4 +106,16 @@ public class PreferenceManager {
     public String getUserId() {
         return mPreference.getString(FLICKR_USER_ID, null);
     }
+
+    public boolean isAuthenticating() {
+        return mPreference.getBoolean(AUTHENTICATING, false);
+    }
+
+    public void setAuthenticating(boolean authenticating) {
+        Editor editor = mPreference.edit();
+        editor.putBoolean(AUTHENTICATING, authenticating);
+        editor.commit();
+    }
+
+
 }

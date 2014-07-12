@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.googlecode.flickrjandroid.oauth.OAuth;
+import com.googlecode.flickrjandroid.people.User;
 
 import net.itsuha.flickr_twicca.R;
 import net.itsuha.flickr_twicca.setting.SettingActivity;
@@ -36,13 +37,36 @@ public class UploadActivity extends Activity implements  UploadTask.Callback{
 		setContentView(R.layout.upload);
 
         OAuth oauth = PreferenceManager.getInstance().loadSavedOAuth();
-		if (oauth == null) {
-			Intent intent = new Intent(this, SettingActivity.class);
+		if (isAuthenticated(oauth)) {
+            showProgressDialog();
+            startUploadThread();
 		} else {
-			showProgressDialog();
-			startUploadThread();
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
 		}
 	}
+
+    private boolean isAuthenticated(OAuth oauth){
+        if(oauth == null){
+            if(DEBUG){
+            Log.d(LOGTAG, "OAuth: null");
+            }
+            return false;
+        }else{
+            final User user = oauth.getUser();
+            if(user == null){
+                if(DEBUG) {
+                    Log.d(LOGTAG, "OAuth: User null");
+                }
+                return false;
+            }else{
+                if(DEBUG) {
+                    Log.d(LOGTAG, "OAuth: User " + user.getUsername());
+                }
+                return true;
+            }
+        }
+    }
 
 	private void startUploadThread() {
 		Intent callIntent = getIntent();
