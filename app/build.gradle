@@ -3,14 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 19
     buildToolsVersion '20.0.0'
-    defaultConfig {
-        applicationId "net.itsuha.flickr_twicca"
-        minSdkVersion 8
-        //noinspection OldTargetApi
-        targetSdkVersion 19
-        versionCode 50
-        versionName "0.5.0"
-    }
 
     // load signingConfigs from HOME directory
     apply from: "${System.env.HOME}/signingConfigs.gradle", to: android
